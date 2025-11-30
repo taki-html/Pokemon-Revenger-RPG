@@ -1,94 +1,119 @@
-// Na pasta "mecanicas"
 package mecanicas;
 
-import java.util.Scanner;
 import personagem.Personagem;
-import util.Util;
 
 public class Batalha {
-    // ... (Construtores e variáveis p1, p2, etc. permanecem iguais) ...
-    
+
     private Personagem p1;
     private Personagem p2;
-    private Scanner scanner;
     private IEstrategiaBatalha estrategia;
     private boolean batalhaTerminou;
+    private boolean vitoriaJogador; // Para saber se ganhou ou perdeu
 
-    // Construtor Padrão
-    public Batalha(Personagem p1, Personagem p2, Scanner scanner) {
-        this.p1 = p1;
-        this.p2 = p2;
-        this.scanner = scanner;
-        this.batalhaTerminou = false;
-        this.estrategia = new EstrategiaBatalhaNormal(); 
+    public Batalha(Personagem p1, Personagem p2) {
+        this(p1, p2, new EstrategiaBatalhaNormal());
     }
 
-    // Construtor para lógicas especiais
-    public Batalha(Personagem p1, Personagem p2, Scanner scanner, IEstrategiaBatalha estrategia) {
+    public Batalha(Personagem p1, Personagem p2, IEstrategiaBatalha estrategia) {
         this.p1 = p1;
         this.p2 = p2;
-        this.scanner = scanner;
         this.estrategia = estrategia;
         this.batalhaTerminou = false;
+        this.vitoriaJogador = false;
     }
 
-    public void setBatalhaTerminou(boolean terminou) {
-        this.batalhaTerminou = terminou;
+    // Retorna as opções para exibir no frontend (ex: 1. Atacar, 2. Fugir)
+    public String getTextoOpcoes() {
+        String[] ops = estrategia.getOpcoesDoJogador();
+        StringBuilder sb = new StringBuilder();
+        sb.append("\nO que você fará?\n");
+        for (int i = 0; i < ops.length; i++) {
+            sb.append((i + 1)).append(". ").append(ops[i]).append("\n");
+        }
+        return sb.toString();
     }
 
-    // ... (iniciarBatalha() e turnoInimigo() permanecem os mesmos) ...
-    public boolean iniciarBatalha() {
-        System.out.printf("\n--- BATALHA INICIADA: %s vs %s ---\n", p1.getNome(), p2.getNome());
-        Util.pausar(1);
+    // Processa UM input do frontend (Input -> Lógica Player -> Lógica Inimigo -> Retorno Texto)
+    public String processarRodada(String input) {
+        StringBuilder logBatalha = new StringBuilder();
+        int escolha;
 
-        while (p1.estaVivo() && p2.estaVivo() && !batalhaTerminou) {
-
-            if (p1.getAgi() >= p2.getAgi()) {
-                turnoJogador();
-                if (!p2.estaVivo() || !p1.estaVivo() || batalhaTerminou) break;
-                turnoInimigo();
-            } else {
-                turnoInimigo();
-                if (!p1.estaVivo() || !p2.estaVivo() || batalhaTerminou) break;
-                turnoJogador();
-            }
+        try {
+            escolha = Integer.parseInt(input);
+        } catch (NumberFormatException e) {
+            return "Digite o número da opção (ex: 1).";
         }
 
-        // Fim da batalha
+        // 1. Turno do Jogador
+        logBatalha.append(estrategia.executarTurnoJogador(escolha, p1, p2, this));
+
+        if (batalhaTerminou) {
+            return finalizarBatalha(logBatalha);
+        }
+
+        if (!p2.estaVivo()) { // Inimigo morreu
+            this.batalhaTerminou = true;
+            return finalizarBatalha(logBatalha);
+        }
+
+        // 2. Turno do Inimigo (Contra-ataque imediato)
+        logBatalha.append("\n");
+        logBatalha.append(estrategia.executarTurnoInimigo(p1, p2, this));
+
+        if (!p1.estaVivo()) { // Jogador morreu
+            this.batalhaTerminou = true;
+            return finalizarBatalha(logBatalha);
+        }
+
+        // Se ninguém morreu, mostra opções de novo
+        logBatalha.append(getTextoOpcoes());
+        return logBatalha.toString();
+    }
+
+    private String finalizarBatalha(StringBuilder log) {
+        log.append("\n--- FIM DA BATALHA ---\n");
+        
         if (p1.estaVivo() && !p2.estaVivo()) {
-            System.out.printf("\n%s venceu a batalha!\n", p1.getNome());
-            return true;
-        } else if (estrategia.isBatalhaImpossivel() && p1.getHp() == 1) {
-            System.out.println("\n(Você foi derrotado, mas sobreviveu...)");
-            return false;
+            // --- VITÓRIA DO JOGADOR ---
+            this.vitoriaJogador = true;
+            log.append(p1.getNome()).append(" venceu!\n");
+            
+            if (!estrategia.isBatalhaImpossivel()) {
+                int xpGanho = 50; // Valor padrão de segurança
+
+                // Verifica se o oponente é um Inimigo para pegar o XP correto
+                if (p2 instanceof personagem.Inimigo) {
+                    xpGanho = ((personagem.Inimigo) p2).getExpRecompensa();
+                }
+
+                p1.ganharExp(xpGanho); // Aplica a matemática (soma exp, sobe nível)
+                log.append(" >> Você ganhou ").append(xpGanho).append(" EXP.\n");
+            }
+
         } else if (!p1.estaVivo()) {
-            System.out.printf("\n%s foi derrotado...\n", p1.getNome());
-            return false;
+            // --- DERROTA DO JOGADOR ---
+            this.vitoriaJogador = false;
+            
+            if (estrategia.isBatalhaImpossivel()) {
+                // É uma derrota roteirizada (ex: Capítulo 1), o jogo não acaba.
+                log.append("(Você cai derrotado, mas a história continua...)\n");
+                this.vitoriaJogador = true; // Define como true para Jogo.java continuar
+            } else {
+                // Game Over real
+                log.append("GAME OVER.\n");
+            }
+
         } else {
-            System.out.println("\nA batalha terminou.");
-            return true;
+            // --- FUGA OU EMPATE ---
+            this.vitoriaJogador = true; 
         }
+
+        return log.toString();
     }
 
-
-    /**
-     * Lógica do turno do jogador
-     */
-    private void turnoJogador() {
-        String[] opcoes = estrategia.getOpcoesDoJogador();
-        
-        int escolha = Util.obterEscolha(scanner, "O QUE VOCÊ FAZ?", opcoes);
-        
-        estrategia.executarTurnoJogador(escolha, p1, p2, scanner, this);
-    }
-
-    /**
-     * Lógica do turno do inimigo
-     */
-    private void turnoInimigo() {
-        if (!p2.estaVivo() || batalhaTerminou)
-            return;
-        System.out.println("\nTurno de " + p2.getNome());
-        estrategia.executarTurnoInimigo(p1, p2, this);
-    }
+    // Getters para o Jogo saber se acabou
+    public boolean isTerminou() { return batalhaTerminou; }
+    public boolean isVitoriaJogador() { return vitoriaJogador; }
+    
+    public void setBatalhaTerminou(boolean b) { this.batalhaTerminou = b; }
 }

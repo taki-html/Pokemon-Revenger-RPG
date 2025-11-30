@@ -1,20 +1,24 @@
 package main;
 
 import historia.Capitulo;
-import historia.capitulos.*; // Seus capítulos
+import historia.capitulos.*; 
+import mecanicas.Batalha; // Certifique-se de importar sua classe Batalha
 import personagem.Jogador;
-import personagem.jogaveis.*; // Seus pokémons
+import personagem.Personagem;
+import personagem.Inimigo; // Importe Inimigo se precisar para testes
+import personagem.jogaveis.*; 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Jogo {
 
-    // Estados do Jogo
+    // 1. Definição dos Estados
     private enum Estado {
         INTRO,
         CRIANDO_NOME,
         CRIANDO_POKEMON,
         JOGANDO,
+        EM_BATALHA, // O caso que estava faltando
         FIM
     }
 
@@ -22,29 +26,42 @@ public class Jogo {
     private Jogador jogador;
     private List<Capitulo> listaCapitulos;
     private int indiceCapituloAtual;
-    private String bufferTexto; // Guarda o texto para enviar ao front
+    private String bufferTexto;
+    private String nomeTemp;
+
+    // 2. Variável que estava dando erro de "não utilizada"
+    private Batalha batalhaAtual; 
 
     public Jogo() {
         this.estadoAtual = Estado.INTRO;
         this.indiceCapituloAtual = 0;
         this.listaCapitulos = new ArrayList<>();
-        // Inicializa lista (Aqui você colocará todos os 10 adaptados futuramente)
-        this.listaCapitulos.add(new CapituloUm()); 
-        this.listaCapitulos.add(new CapituloDois()); 
-        this.listaCapitulos.add(new CapituloTres()); 
-        this.listaCapitulos.add(new CapituloQuatro()); 
-        this.listaCapitulos.add(new CapituloCinco()); 
-        this.listaCapitulos.add(new CapituloSeis()); 
-        this.listaCapitulos.add(new CapituloSete()); 
-        this.listaCapitulos.add(new CapituloOito()); 
-        this.listaCapitulos.add(new CapituloNove()); 
-        this.listaCapitulos.add(new CapituloDez()); 
+        this.bufferTexto = "";
 
+        // Adicione seus capítulos aqui
+        this.listaCapitulos.add(new CapituloUm()); 
+        // this.listaCapitulos.add(new CapituloDois()); ...
     }
 
-    // Método principal chamado pelo Servidor
+    // --- MÉTODOS AUXILIARES ---
+
+    private void adicionarTexto(String t) {
+        if (bufferTexto.length() > 0) bufferTexto += "\n";
+        bufferTexto += t;
+    }
+
+    // Método para iniciar batalhas vindo dos Capítulos
+    public void iniciarBatalha(Personagem inimigo) {
+        this.batalhaAtual = new Batalha(this.jogador, inimigo);
+        this.estadoAtual = Estado.EM_BATALHA;
+        adicionarTexto("\n!!! UMA BATALHA COMEÇOU !!!");
+        adicionarTexto(this.batalhaAtual.getTextoOpcoes());
+    }
+
+    // --- PROCESSAMENTO PRINCIPAL ---
+
     public String processarEntrada(String input) {
-        bufferTexto = ""; // Limpa o buffer
+        bufferTexto = ""; 
 
         switch (estadoAtual) {
             case INTRO:
@@ -57,44 +74,34 @@ public class Jogo {
                 if (input == null || input.trim().isEmpty()) {
                     return "Por favor, digite um nome válido.";
                 }
-                // Cria um jogador temporário só para guardar o nome por enquanto
-                // Vamos instanciar o real na próxima etapa
-                String nomeTemp = input;
+                this.nomeTemp = input;
                 adicionarTexto("Prazer, " + nomeTemp + "!");
-                adicionarTexto("Agora, quem é você?");
-                adicionarTexto("1. Charmander\n2. Turtwig\n3. Piplup\n4. Tepig\n5. Rowlet\n6. Froakie");
-                adicionarTexto("Digite o número (1-6):");
-                
-                // Hack: Guardar o nome em uma variável temporária ou criar um Jogador genérico
-                this.jogador = new Charmander(nomeTemp); // Temporário
+                adicionarTexto("Escolha seu parceiro:");
+                adicionarTexto("1. Charmander | 2. Turtwig | 3. Piplup");
+                adicionarTexto("4. Tepig      | 5. Rowlet  | 6. Froakie");
                 estadoAtual = Estado.CRIANDO_POKEMON;
                 break;
 
             case CRIANDO_POKEMON:
                 try {
                     int escolha = Integer.parseInt(input);
-                    String nome = this.jogador.getNome(); // Recupera o nome
-
                     switch (escolha) {
-                        case 1: this.jogador = new Charmander(nome); break;
-                        case 2: this.jogador = new Turtwig(nome); break;
-                        case 3: this.jogador = new Piplup(nome); break;
-                        case 4: this.jogador = new Tepig(nome); break;
-                        case 5: this.jogador = new Rowlet(nome); break;
-                        case 6: this.jogador = new Froakie(nome); break;
-                        default: 
-                            return "Escolha inválida. Digite entre 1 e 6.";
+                        case 1: this.jogador = new Charmander(nomeTemp); break;
+                        case 2: this.jogador = new Turtwig(nomeTemp); break;
+                        case 3: this.jogador = new Piplup(nomeTemp); break;
+                        case 4: this.jogador = new Tepig(nomeTemp); break;
+                        case 5: this.jogador = new Rowlet(nomeTemp); break;
+                        case 6: this.jogador = new Froakie(nomeTemp); break;
+                        default: return "Escolha inválida (1-6).";
                     }
-                    adicionarTexto("Você escolheu: " + this.jogador.getNome() + "!");
-                    this.jogador.mostrarStatus(); // Você pode adaptar esse método para retornar String depois
                     
+                    adicionarTexto("Você escolheu: " + this.jogador.getNome());
+                    
+                    // Inicia o Capítulo 1
                     adicionarTexto("\n--- CAPÍTULO 1 ---");
-                    // Chama a primeira vez o capítulo 1 (input vazio para iniciar)
-                    String textoCap = listaCapitulos.get(0).processar("", jogador);
-                    adicionarTexto(textoCap);
-                    
+                    adicionarTexto(listaCapitulos.get(0).processar("", jogador));
                     estadoAtual = Estado.JOGANDO;
-                    
+
                 } catch (NumberFormatException e) {
                     return "Digite apenas o número.";
                 }
@@ -106,31 +113,66 @@ public class Jogo {
                 }
 
                 Capitulo capAtual = listaCapitulos.get(indiceCapituloAtual);
-                String respostaCapitulo = capAtual.processar(input, jogador);
-                adicionarTexto(respostaCapitulo);
+                String resposta = capAtual.processar(input, jogador);
 
-                if (capAtual.estaFinalizado()) {
-                    indiceCapituloAtual++;
-                    if (indiceCapituloAtual < listaCapitulos.size()) {
-                        adicionarTexto("\n--- PRÓXIMO CAPÍTULO ---");
-                        // Inicia o próximo já
-                        adicionarTexto(listaCapitulos.get(indiceCapituloAtual).processar("", jogador));
-                    } else {
-                        estadoAtual = Estado.FIM;
-                        adicionarTexto("\n[FIM DE JOGO]");
+                // --- GATILHO DE BATALHA (Exemplo) ---
+                // Se o texto do capítulo contiver "[BATALHA]", iniciamos o combate
+                // Isso resolve o uso do campo 'batalhaAtual'
+                if (resposta.contains("[BATALHA]")) {
+                    // Exemplo: Criar um inimigo genérico para teste
+                    // Na versão final, o Capítulo deve dizer qual é o inimigo
+                    Inimigo inimigoTeste = new Inimigo("Rattata Selvagem", 10, 2, 1, 2, 1);
+                    iniciarBatalha(inimigoTeste); 
+                } else {
+                    adicionarTexto(resposta);
+
+                    if (capAtual.estaFinalizado()) {
+                        indiceCapituloAtual++;
+                        if (indiceCapituloAtual < listaCapitulos.size()) {
+                            adicionarTexto("\n--- PRÓXIMO CAPÍTULO ---");
+                            adicionarTexto(listaCapitulos.get(indiceCapituloAtual).processar("", jogador));
+                        } else {
+                            estadoAtual = Estado.FIM;
+                            adicionarTexto("\n[FIM DE JOGO]");
+                        }
                     }
                 }
                 break;
-                
+
+            // 3. O CASE QUE FALTAVA (Resolve o erro do Enum)
+            case EM_BATALHA:
+                if (batalhaAtual == null) {
+                    estadoAtual = Estado.JOGANDO;
+                    break;
+                }
+
+                // Envia o input do usuário para a batalha
+                String resultadoBatalha = batalhaAtual.processarRodada(input);
+                adicionarTexto(resultadoBatalha);
+
+                // Verifica se acabou
+                if (batalhaAtual.isTerminou()) {
+                    if (batalhaAtual.isVitoriaJogador()) {
+                        adicionarTexto("\n(Você venceu a batalha! Retornando à história...)");
+                        estadoAtual = Estado.JOGANDO;
+                        
+                        // --- CORREÇÃO AQUI ---
+                        // Não criamos 'Capitulo capAtual', acessamos direto da lista
+                        // Chama o processar("", jogador) para pegar o texto pós-batalha (Etapa 2)
+                        String textoPosBatalha = listaCapitulos.get(indiceCapituloAtual).processar("", jogador);
+                        adicionarTexto(textoPosBatalha);
+
+                    } else {
+                        adicionarTexto("\n(Você sucumbiu aos ferimentos...)");
+                        estadoAtual = Estado.FIM;
+                    }
+                }
+                break;
+
             case FIM:
-                return "O jogo acabou. Reinicie a página para jogar novamente.";
+                return "O jogo acabou. Reinicie a página.";
         }
 
         return bufferTexto;
-    }
-
-    private void adicionarTexto(String t) {
-        if (bufferTexto.length() > 0) bufferTexto += "\n";
-        bufferTexto += t;
     }
 }

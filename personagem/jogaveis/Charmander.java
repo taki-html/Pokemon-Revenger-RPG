@@ -11,6 +11,15 @@ public class Charmander extends Jogador {
         super(nome, 15, 3, 3, 3, 1);
     }
 
+    @Override
+    protected void aplicarAtributosDeNivel() {
+        this.hpMax += 5;
+        this.atk += 3; // Foco em Ataque
+        this.def += 1;
+        this.agi += 2;
+        System.out.println("   | (As chamas de Charmander estão mais intensas! +ATK)");
+    }
+
     //Implementação de método abstrato
     @Override
     public String getHabilidadeExploracao() {

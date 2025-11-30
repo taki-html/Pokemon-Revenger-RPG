@@ -10,6 +10,15 @@ public class Froakie extends Jogador {
         super(nome, 15, 3, 3, 3, 1);
     }
 
+    @Override
+    protected void aplicarAtributosDeNivel() {
+        this.hpMax += 4;
+        this.atk += 2;
+        this.def += 1;
+        this.agi += 3; // Foco em Agilidade
+        System.out.println("   | (Froakie se move com mais rapidez! +AGI)");
+    }
+
     //Implementação de método abstrato
     @Override
     public String getHabilidadeExploracao() {

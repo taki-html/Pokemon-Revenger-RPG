@@ -17,6 +17,15 @@ public class Rowlet extends Jogador {
         
     }
 
+    @Override
+    protected void aplicarAtributosDeNivel() {
+        this.hpMax += 5;
+        this.atk += 2;
+        this.def += 1;
+        this.agi += 2; // Balanceado
+        System.out.println("   | (As penas de Rowlet permitem voos mais precisos! +AGI)");
+    }
+
     //Implementa a lógica da habilidade específica do Rowlet.
     @Override
     public String usarHabilidadeExploracao(String alvo) {

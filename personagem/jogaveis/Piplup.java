@@ -16,6 +16,15 @@ public class Piplup extends Jogador {
         return HABILIDADE;
     }
 
+    @Override
+    protected void aplicarAtributosDeNivel() {
+        this.hpMax += 5;
+        this.atk += 2;
+        this.def += 2; // Balanceado
+        this.agi += 1;
+        System.out.println("   | (Piplup parece mais orgulhoso e resistente! +DEF)");
+    }
+
     //Implementa a lógica da habilidade específica do Piplup.
     @Override
     public String usarHabilidadeExploracao(String alvo) {

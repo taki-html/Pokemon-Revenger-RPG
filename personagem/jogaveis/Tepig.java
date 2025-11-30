@@ -15,6 +15,15 @@ public class Tepig extends Jogador {
     public String getHabilidadeExploracao() {
         return HABILIDADE;
     }
+
+    @Override
+    protected void aplicarAtributosDeNivel() {
+        this.hpMax += 7; // Ganha muita vida
+        this.atk += 3;   // Bate forte
+        this.def += 1;
+        this.agi += 1;   // Lento
+        System.out.println("   | (Tepig está ficando robusto! +HP +ATK)");
+    }
     
     //Implementa a lógica da habilidade específica do Tepig.
     @Override

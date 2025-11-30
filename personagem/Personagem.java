@@ -1,4 +1,5 @@
 package personagem;
+import util.Util;
 
 public abstract class Personagem {
 
@@ -27,9 +28,25 @@ public abstract class Personagem {
 
     // Lógica de ataque:
     public int atacar(Personagem alvo) {
-        int dano = Math.max(1, this.atk - alvo.getDef());
-        alvo.receberDano(dano);
-        return dano;
+    // 1. Calcula o dano base
+    int danoBase = this.atk - alvo.getDef();
+    if (danoBase < 1) danoBase = 1; // Garante pelo menos 1 de dano
+
+    // 2. Fator de aleatoriedade (Variância de +/- 20%)
+    // Exemplo: Se dano é 10, pode variar entre 8 e 12.
+    double variacao = (Math.random() * 0.4) + 0.8; 
+    int danoFinal = (int) (danoBase * variacao);
+
+    // 3. Sistema de Crítico (10% de chance de causar 150% de dano)
+    boolean critico = Math.random() < 0.10; 
+    if (critico) {
+        danoFinal = (int) (danoFinal * 1.5);
+        System.out.print(Util.VERMELHO + " [CRÍTICO!] " + Util.RESET); // Opcional se usar a classe Util
+    }
+
+    // 4. Aplica o dano
+    alvo.receberDano(danoFinal);
+    return danoFinal;
     }
 
     //Lógica de dano

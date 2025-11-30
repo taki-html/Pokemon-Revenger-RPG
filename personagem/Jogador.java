@@ -22,15 +22,17 @@ public abstract class Jogador extends Personagem {
 
     @Override
     protected void levelUp() {
-        super.levelUp();
-        this.hpMax += 2; // +2 HP Max
-        this.hp = this.hpMax; // Cura total ao subir de nível
-        this.atk += 1; // +1 ATK
-        this.def += 1; // +1 DEF
-        this.agi += 1; // +1 AGI
-        
-        System.out.printf("   | HP Max: %d | ATK: %d | DEF: %d | AGI: %d\n", this.hpMax, this.atk, this.def, this.agi);
+      super.levelUp(); // Reseta XP e sobe nível
+    
+      // Recupera toda a vida ao subir de nível
+      this.hp = this.hpMax; 
+    
+      // Chama um método que as subclasses (Guerreiro, Mago) vão definir
+      aplicarAtributosDeNivel(); 
     }
+
+    // Novo método abstrato para obrigar Guerreiro/Mago a definir seus ganhos
+    protected abstract void aplicarAtributosDeNivel();
 
     public void adicionarPista(String pista) {
         if (!this.inventarioPistas.contains(pista)) {

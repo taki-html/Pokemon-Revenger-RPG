@@ -11,6 +11,15 @@ public class Turtwig extends Jogador {
         super(nome, 15, 3, 3, 3, 1);
     }
 
+    @Override
+    protected void aplicarAtributosDeNivel() {
+        this.hpMax += 6;
+        this.atk += 2;
+        this.def += 3; // Muita defesa
+        this.agi += 0; // Tartarugas não ficam mais rápidas
+        System.out.println("   | (O casco de Turtwig ficou mais duro! +DEF)");
+    }
+
     //Implementação de método abstrato
     @Override
     public String getHabilidadeExploracao() {
