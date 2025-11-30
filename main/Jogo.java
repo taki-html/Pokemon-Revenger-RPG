@@ -30,7 +30,16 @@ public class Jogo {
         this.listaCapitulos = new ArrayList<>();
         // Inicializa lista (Aqui você colocará todos os 10 adaptados futuramente)
         this.listaCapitulos.add(new CapituloUm()); 
-        // this.listaCapitulos.add(new CapituloDois()); etc...
+        this.listaCapitulos.add(new CapituloDois()); 
+        this.listaCapitulos.add(new CapituloTres()); 
+        this.listaCapitulos.add(new CapituloQuatro()); 
+        this.listaCapitulos.add(new CapituloCinco()); 
+        this.listaCapitulos.add(new CapituloSeis()); 
+        this.listaCapitulos.add(new CapituloSete()); 
+        this.listaCapitulos.add(new CapituloOito()); 
+        this.listaCapitulos.add(new CapituloNove()); 
+        this.listaCapitulos.add(new CapituloDez()); 
+
     }
 
     // Método principal chamado pelo Servidor
