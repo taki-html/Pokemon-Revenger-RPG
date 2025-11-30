@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Pokémon Revenge</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="game-container">
+        <!-- Fundo -->
+        <div id="background"></div>
+
+        <!-- Película preta -->
+        <div id="overlay" class="overlay"></div>
+
+        <!-- Menu principal -->
+        <header id="main-menu">
+            <div class="logo">Pokémon Revenge</div>
+            <nav>
+                <button class="menu-btn" data-screen="play">Play</button>
+                <button class="menu-btn" data-screen="resumo">Resumo</button>
+                <button class="menu-btn" data-screen="equipe">Equipe</button>
+            </nav>
+        </header>
+
+        <!-- Conteúdo das abas -->
+        <main id="content">
+            <!-- Play -->
+            <section id="screen-play" class="screen active">
+                <h2>Bem-vindo ao mundo Pokémon</h2>
+                <p id="texto-intro">
+                    Clique em "Iniciar Jogo" para começar sua aventura.
+                </p>
+                <button id="btn-iniciar-jogo">Iniciar Jogo</button>
+            </section>
+
+            <!-- Resumo -->
+            <section id="screen-resumo" class="screen">
+                <h2>Resumo</h2>
+                <p id="texto-resumo">
+                   Você é um Pokémon de Johto, arrancado de sua vida selvagem e capturado por um treinador cruel. Mais do que um parceiro, você é tratado como uma ferramenta, forçado a lutar em batalhas clandestinas e brutais, sendo maltratado após cada vitória ou derrota.
+
+Percebendo que a liberdade não virá por conta própria, você planeja sua fuga. Mas escapar não é o bastante. Você descobre que seu captor pertence a uma organização secreta. Sua jornada se torna uma missão de vingança e libertação: encontrar uma forma de desmantelar essa organização e resgatar os outros cativos.
+ 
+                </p>
+            </section>
+
+            <!-- Equipe -->
+            <section id="screen-equipe" class="screen">
+                <h2>Conheça a equipe</h2>
+                <ul class="team-list">
+                    <!-- preenchido pelo Java -->
+                </ul>
+            </section>
+        </main>
+
+        <!-- HUD do jogo (pra usar depois com capítulos) -->
+        <div id="hud" class="hidden">
+            <div id="texto-capitulo"></div>
+            <button id="btn-proximo">Próximo</button>
+        </div>
+    </div>
+
+    <script src="conf.js"></script>
+</body>
+</html>
