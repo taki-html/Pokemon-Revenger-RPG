@@ -121,6 +121,7 @@ public class Jogo {
                 break;
 
             case JOGANDO:
+                // 1. Verificação de segurança: Se não há mais capítulos, acaba
                 if (indiceCapituloAtual >= listaCapitulos.size()) {
                     return "O Jogo Acabou. Obrigado por jogar!";
                 }
@@ -128,28 +129,56 @@ public class Jogo {
                 Capitulo capAtual = listaCapitulos.get(indiceCapituloAtual);
                 String resposta = capAtual.processar(input, jogador);
 
+                // 2. Verifica se o Capítulo pediu uma Batalha
                 if (resposta.contains("[BATALHA]")) {
                     
-                    // LÓGICA PARA DECIDIR QUAL A BATALHA BASEADA NO CAPÍTULO ATUAL
+                    // LÓGICA DE SELEÇÃO DE INIMIGO POR CAPÍTULO
                     if (indiceCapituloAtual == 0) { // Capítulo 1
                         
-                        // Cria o Quilava forte e a estratégia de derrota
+                        // Quilava do Cap 1 (Forte, estratégia roteirizada)
                         Inimigo quilava = new Inimigo("Quilava", 25, 8, 6, 7, 5);
                         IEstrategiaBatalha estrategiaCap1 = new EstrategiaBatalhaCap1();
                         
                         iniciarBatalha(quilava, estrategiaCap1);
                         
                     } else if (indiceCapituloAtual == 2) { // Exemplo: Capítulo 3
-                         // Lógica para batalha do Cap 3...
+                        // Lógica para batalha do Cap 3 (se houver)...
+                        // Inimigo inimigoCap3 = ...
+                        // iniciarBatalha(inimigoCap3, estrategiaCap3);
+                        
                     } else {
-                        // Batalha Genérica (Rattata) para testes ou capítulos sem boss
+                        // Batalha Genérica (Fallback para testes)
                         Inimigo rato = new Inimigo("Rattata", 10, 2, 1, 2, 1);
                         iniciarBatalha(rato);
                     }
 
                 } else {
+                    // 3. Se não é batalha, apenas mostra o texto da história
                     adicionarTexto(resposta);
-                    // ... (resto da lógica de finalizar capítulo) ...
+
+                    // 4. Verifica se o capítulo terminou
+                    if (capAtual.estaFinalizado()) {
+                        
+                        // Verifica se foi um FINAL RUIM (Ex: Capítulo 2 - Traição)
+                        if (resposta.contains("[FIM DE JOGO]")) {
+                            estadoAtual = Estado.FIM;
+                        } 
+                        // Se for um final normal, avança para o próximo capítulo
+                        else {
+                            indiceCapituloAtual++;
+                            
+                            if (indiceCapituloAtual < listaCapitulos.size()) {
+                                adicionarTexto("\n--- PRÓXIMO CAPÍTULO ---");
+                                // Inicia o próximo capítulo imediatamente (input vazio) para pegar o texto inicial
+                                String textoProxCap = listaCapitulos.get(indiceCapituloAtual).processar("", jogador);
+                                adicionarTexto(textoProxCap);
+                            } else {
+                                // Acabaram os capítulos da lista
+                                estadoAtual = Estado.FIM;
+                                adicionarTexto("\n[FIM DE JOGO - Parabéns, você completou a demo!]");
+                            }
+                        }
+                    }
                 }
                 break;
 
