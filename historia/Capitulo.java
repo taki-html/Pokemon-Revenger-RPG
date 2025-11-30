@@ -1,14 +1,18 @@
 package historia;
-import java.util.Scanner;
 
 import personagem.Jogador;
 
-public interface Capitulo {
+public abstract class Capitulo {
+    // Controla em qual "parte" do capítulo o jogador está
+    protected int etapa = 0;
+
     /**
-     * Executa a lógica do capítulo.
-     * @param jogador O objeto Jogador, que será modificado pelo capítulo.
-     * @param scanner O Scanner para ler a entrada do usuário.
-     * @return Um objeto ResultadoCapitulo indicando se o jogo continua e qualquer mensagem final.
+     * @param input O texto ou número que o usuário digitou no navegador.
+     * @param jogador O objeto do jogador.
+     * @return O texto da história para exibir na tela.
      */
-    ResultadoCapitulo executar(Jogador jogador, Scanner scanner);
+    public abstract String processar(String input, Jogador jogador);
+    
+    // Verifica se o capítulo acabou para passar pro próximo
+    public abstract boolean estaFinalizado();
 }

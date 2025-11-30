@@ -1,160 +1,127 @@
 package main;
+
 import historia.Capitulo;
-import historia.ResultadoCapitulo;
-import historia.capitulos.CapituloUm;
-import historia.capitulos.CapituloDois;
-import historia.capitulos.CapituloTres;
-import historia.capitulos.CapituloQuatro;
-import historia.capitulos.CapituloCinco;
-import historia.capitulos.CapituloSeis;
-import historia.capitulos.CapituloSete;
-import historia.capitulos.CapituloOito;
-import historia.capitulos.CapituloNove;
-import historia.capitulos.CapituloDez;
-import java.util.InputMismatchException;
-import java.util.Scanner;
+import historia.capitulos.*; // Seus capítulos
 import personagem.Jogador;
-import personagem.jogaveis.Charmander;
-import personagem.jogaveis.Froakie;
-import personagem.jogaveis.Piplup;
-import personagem.jogaveis.Rowlet;
-import personagem.jogaveis.Tepig;
-import personagem.jogaveis.Turtwig;
-import util.Util;
+import personagem.jogaveis.*; // Seus pokémons
+import java.util.ArrayList;
+import java.util.List;
 
 public class Jogo {
 
-    private Jogador jogador;
-    private Scanner scanner;
+    // Estados do Jogo
+    private enum Estado {
+        INTRO,
+        CRIANDO_NOME,
+        CRIANDO_POKEMON,
+        JOGANDO,
+        FIM
+    }
 
-    private Capitulo[] capitulos;
+    private Estado estadoAtual;
+    private Jogador jogador;
+    private List<Capitulo> listaCapitulos;
+    private int indiceCapituloAtual;
+    private String bufferTexto; // Guarda o texto para enviar ao front
 
     public Jogo() {
-        this.scanner = new Scanner(System.in);
+        this.estadoAtual = Estado.INTRO;
+        this.indiceCapituloAtual = 0;
+        this.listaCapitulos = new ArrayList<>();
+        // Inicializa lista (Aqui você colocará todos os 10 adaptados futuramente)
+        this.listaCapitulos.add(new CapituloUm()); 
+        // this.listaCapitulos.add(new CapituloDois()); etc...
     }
 
-    //Ponto de entrada principal do jogo
-    public static void main(String[] args) {
-        Jogo rpg = new Jogo();
-        try {
-            rpg.iniciar();
-        } catch (Exception e) {
-            System.err.println("\nUm erro inesperado ocorreu e o jogo precisou ser encerrado.");
-            e.printStackTrace();
-        } finally {
-            rpg.scanner.close();
-        }
-    }
+    // Método principal chamado pelo Servidor
+    public String processarEntrada(String input) {
+        bufferTexto = ""; // Limpa o buffer
 
-    //Inicia a lógica principal do jogo
-    public void iniciar() {
-        mostrarIntroducao();
-        this.jogador = criarPersonagem();
-        this.jogador.mostrarStatus();
+        switch (estadoAtual) {
+            case INTRO:
+                adicionarTexto("Bem-vindo ao Pokémon: Revenge!");
+                adicionarTexto("Para começar, qual é o seu nome?");
+                estadoAtual = Estado.CRIANDO_NOME;
+                break;
 
-        // Inicializa os capítulos
-        this.capitulos = new Capitulo[] {
-            new CapituloUm(),
-            new CapituloDois(),
-            new CapituloTres(),
-            new CapituloQuatro(),
-            new CapituloCinco(),
-            new CapituloSeis(),
-            new CapituloSete(),
-            new CapituloOito(),
-            new CapituloNove(),
-            new CapituloDez()
-        };
-
-        // Loop principal do jogo
-        for (Capitulo capitulo : capitulos) {
-            ResultadoCapitulo resultado = capitulo.executar(jogador, scanner);
-            
-            if (!resultado.jogoContinua()) {
-                System.out.println("\n[FIM DE JOGO]");
-                System.out.println(resultado.getMensagemFinal());
-                return; // Encerra o jogo
-            }
-            Util.pausar(1);
-        }
-        
-        // Se o loop terminar sem um final ruim
-        System.out.println("\nParabéns! Você chegou ao final da demo.");
-    }
-
-    private void mostrarIntroducao() {
-        System.out.println("############################################################");
-        System.out.println("#                                                          #");
-        System.out.println("#                   POKÉMON: REVENGE                       #");
-        System.out.println("#                                                          #");
-        System.out.println("############################################################");
-        Util.pausar(2);
-    }
-
-    /**
-     * Criação do personagem do jogador.
-     */
-    private Jogador criarPersonagem() {
-        System.out.println("Seja bem-vindo ao mundo dos Pokémons! Eu sou... quer dizer, não importa quem eu sou!");
-        System.out.println("Você parece ser novo por aqui...");
-        System.out.println("Não sei dizer ao certo, você é um...");
-        
-        String[] nomesPokemon = {
-            "Charmander", 
-            "Turtwig", 
-            "Piplup", 
-            "Tepig", 
-            "Rowlet", 
-            "Froakie"
-        };
-
-        String[] descricoes = {
-            "É mesmo, um Charmander! Eu lembro de ver outros como você por aí, com uma chama na ponta da cauda.",
-            "É mesmo, um Turtwig! Eu me lembro de ver outros como você por aí, com um broto em suas costas para absorver o sol.",
-            "É mesmo, um Piplup! Eu me lembro de ver outros como você por aí, suas nadadeiras são maneiras.",
-            "É mesmo, um Tepig! Eu me lembro de ver outros como você por aí, sempre saltitantes.",
-            "É mesmo, um Rowlet! Eu me lembro de ver outros como você por aí, voando para onde quer que fossem",
-            "É mesmo, um Froakie! Eu me lembro de ver outros como você por aí, suas patas parecem ser muito habilidosas."
-        };
-
-        for (int i = 0; i < nomesPokemon.length; i++) {
-            System.out.printf("%d. [%s]\n", (i + 1), nomesPokemon[i]);
-        }
-
-        int escolha = -1;
-        while (escolha < 1 || escolha > nomesPokemon.length) {
-            System.out.print("\nEscolha quem você é (1-6): ");
-            try {
-                escolha = scanner.nextInt();
-                if (escolha < 1 || escolha > nomesPokemon.length) {
-                    System.out.println("Escolha inválida. Tente novamente.");
+            case CRIANDO_NOME:
+                if (input == null || input.trim().isEmpty()) {
+                    return "Por favor, digite um nome válido.";
                 }
-            } catch (InputMismatchException e) {
-                System.out.println("Entrada inválida. Por favor, digite um número.");
-                scanner.next();
-            }
+                // Cria um jogador temporário só para guardar o nome por enquanto
+                // Vamos instanciar o real na próxima etapa
+                String nomeTemp = input;
+                adicionarTexto("Prazer, " + nomeTemp + "!");
+                adicionarTexto("Agora, quem é você?");
+                adicionarTexto("1. Charmander\n2. Turtwig\n3. Piplup\n4. Tepig\n5. Rowlet\n6. Froakie");
+                adicionarTexto("Digite o número (1-6):");
+                
+                // Hack: Guardar o nome em uma variável temporária ou criar um Jogador genérico
+                this.jogador = new Charmander(nomeTemp); // Temporário
+                estadoAtual = Estado.CRIANDO_POKEMON;
+                break;
+
+            case CRIANDO_POKEMON:
+                try {
+                    int escolha = Integer.parseInt(input);
+                    String nome = this.jogador.getNome(); // Recupera o nome
+
+                    switch (escolha) {
+                        case 1: this.jogador = new Charmander(nome); break;
+                        case 2: this.jogador = new Turtwig(nome); break;
+                        case 3: this.jogador = new Piplup(nome); break;
+                        case 4: this.jogador = new Tepig(nome); break;
+                        case 5: this.jogador = new Rowlet(nome); break;
+                        case 6: this.jogador = new Froakie(nome); break;
+                        default: 
+                            return "Escolha inválida. Digite entre 1 e 6.";
+                    }
+                    adicionarTexto("Você escolheu: " + this.jogador.getNome() + "!");
+                    this.jogador.mostrarStatus(); // Você pode adaptar esse método para retornar String depois
+                    
+                    adicionarTexto("\n--- CAPÍTULO 1 ---");
+                    // Chama a primeira vez o capítulo 1 (input vazio para iniciar)
+                    String textoCap = listaCapitulos.get(0).processar("", jogador);
+                    adicionarTexto(textoCap);
+                    
+                    estadoAtual = Estado.JOGANDO;
+                    
+                } catch (NumberFormatException e) {
+                    return "Digite apenas o número.";
+                }
+                break;
+
+            case JOGANDO:
+                if (indiceCapituloAtual >= listaCapitulos.size()) {
+                    return "O Jogo Acabou. Obrigado por jogar!";
+                }
+
+                Capitulo capAtual = listaCapitulos.get(indiceCapituloAtual);
+                String respostaCapitulo = capAtual.processar(input, jogador);
+                adicionarTexto(respostaCapitulo);
+
+                if (capAtual.estaFinalizado()) {
+                    indiceCapituloAtual++;
+                    if (indiceCapituloAtual < listaCapitulos.size()) {
+                        adicionarTexto("\n--- PRÓXIMO CAPÍTULO ---");
+                        // Inicia o próximo já
+                        adicionarTexto(listaCapitulos.get(indiceCapituloAtual).processar("", jogador));
+                    } else {
+                        estadoAtual = Estado.FIM;
+                        adicionarTexto("\n[FIM DE JOGO]");
+                    }
+                }
+                break;
+                
+            case FIM:
+                return "O jogo acabou. Reinicie a página para jogar novamente.";
         }
-        scanner.nextLine();
 
-        String descricaoEscolhida = descricoes[escolha - 1];
-        System.out.println("\n" + descricaoEscolhida);
+        return bufferTexto;
+    }
 
-        System.out.println("E qual é o seu nome?");
-        String nome = scanner.nextLine();
-
-        System.out.println("Muito prazer em te conhecer, " + nome + "! Você está prestes a viver uma grande aventura");
-        System.out.println("Gostaria muito de poder te contar mais, porém cabe a você descobrir. Te desenho uma boa sorte!");
-
-        Util.aguardarEnter(scanner);
-
-        switch (escolha) {
-            case 1: return new Charmander(nome);
-            case 2: return new Turtwig(nome);
-            case 3: return new Piplup(nome);
-            case 4: return new Tepig(nome);
-            case 5: return new Rowlet(nome);
-            case 6: return new Froakie(nome);
-            default: return new Charmander(nome);
-        }
+    private void adicionarTexto(String t) {
+        if (bufferTexto.length() > 0) bufferTexto += "\n";
+        bufferTexto += t;
     }
 }

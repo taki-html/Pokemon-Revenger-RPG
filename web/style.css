@@ -22,6 +22,11 @@ html, body {
     background-repeat: no-repeat;
 }
 
+#texto-resumo {
+    line-height: 1.6;
+    white-space: pre-line; /* Isso fará o \n do Java virar quebra de linha no HTML */
+}
+
 /* Película preta */
 .overlay {
     position: absolute;

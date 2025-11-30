@@ -1,90 +1,100 @@
 package historia.capitulos;
 
 import historia.Capitulo;
-import historia.ResultadoCapitulo;
-import java.util.Scanner;
 import personagem.Jogador;
-import util.Util;
 
-public class CapituloDez implements Capitulo {
+public class CapituloDez extends Capitulo {
 
     @Override
-    public ResultadoCapitulo executar(Jogador jogador, Scanner scanner) {
-        System.out.println("\n--- CAPÍTULO 10: O NOVO AMANHECER ---");
-        System.out.printf("(Status Atual: Nível %d. HP %d/%d. EXP %d/%d)\n",
-                jogador.getNivel(), jogador.getHp(), jogador.getHpMax(), jogador.getExp(), jogador.getExpParaProximoNivel());
-        
-        System.out.println("(A polícia de Ecruteak chega, alertada pela explosão ou pelos Pokémons libertos.)");
-        System.out.println("Os cultistas estão sendo presos. Você vê Ketch sendo algemado.");
-        System.out.println("Ele te vê. Ele não diz nada. Ele apenas abaixa a cabeça, derrotado.");
-        
-        Util.aguardarEnter(scanner);
+    public boolean estaFinalizado() {
+        return etapa == 99;
+    }
 
-        System.out.println("\nVocê está no topo de uma colina próxima, longe da confusão.");
-        System.out.println("O sol está nascendo sobre Johto. O mesmo sol que te acordou no Capítulo 1.");
-        System.out.println("Está silencioso. Você está livre.");
-        
-        System.out.println("O cheiro das Oran Berries... você quase pode senti-lo vindo da floresta.");
-        System.out.println("Mas... o que fazer agora?");
-        System.out.println("Você não é mais o mesmo Pokémon inocente daquela clareira.");
-        System.out.println("O Sentret se foi. O paraíso se foi.");
+    @Override
+    public String processar(String input, Jogador jogador) {
+        StringBuilder sb = new StringBuilder();
 
-        Util.aguardarEnter(scanner);
+        switch (etapa) {
+            case 0:
+                // --- INTRODUÇÃO E DESFECHO IMEDIATO ---
+                sb.append("\n--- CAPÍTULO 10: O NOVO AMANHECER ---\n");
+                sb.append("(Status Atual: Nível " + jogador.getNivel() + ". HP " + jogador.getHp() + "/" + jogador.getHpMax() + ")\n\n");
+                
+                sb.append("(A polícia de Ecruteak chega, alertada pela explosão ou pelos Pokémons libertos.)\n");
+                sb.append("Os cultistas estão sendo presos. Você vê Ketch sendo algemado.\n");
+                sb.append("Ele te vê. Ele não diz nada. Ele apenas abaixa a cabeça, derrotado.\n\n");
+                
+                sb.append("Você sobe no topo de uma colina próxima, longe da confusão.\n");
+                sb.append("O sol está nascendo sobre Johto. O mesmo sol que te acordou no Capítulo 1.\n");
+                sb.append("Está silencioso. Você está livre.\n\n");
+                
+                sb.append("O cheiro das Oran Berries... você quase pode senti-lo vindo da floresta.\n");
+                sb.append("Mas... o que fazer agora?\n");
+                sb.append("Você não é mais o mesmo Pokémon inocente daquela clareira.\n");
+                sb.append("O Sentret se foi. O paraíso se foi.\n\n");
 
-        int escolhaEpilogo = Util.obterEscolha(scanner, "O QUE VOCÊ FAZ?",
-                "[VOLTAR PARA CASA] (O culto acabou. É hora de voltar para a clareira. Descansar.)",
-                "[PROTEGER OS OUTROS] (Este mundo é perigoso. Você não pode voltar a ser quem era.)");
+                sb.append("O QUE VOCÊ FAZ?\n");
+                sb.append("1. [VOLTAR PARA CASA] (O culto acabou. Descansar na clareira.)\n");
+                sb.append("2. [PROTEGER OS OUTROS] (O mundo é perigoso. Tornar-se um Guardião.)");
+                
+                etapa = 1;
+                break;
 
-        Util.limparTela();
-        
-        if (escolhaEpilogo == 1) {
-            // --- FINAL BOM ---
-            System.out.println("############################################################");
-            System.out.println("#           FINAL BOM: A PAZ RECONQUISTADA                 #");
-            System.out.println("############################################################");
-            Util.pausar(1);
-            
-            System.out.println("\nVocê viaja por dias. De volta por onde veio.");
-            System.out.println("Você chega na colina. Você chega na clareira.");
-            System.out.println("Está... quieta. O Poliwag não está no riacho.");
-            System.out.println("A árvore do Sentret está vazia.");
-            
-            System.out.println("Mas a grama ainda é macia. As Oran Berries ainda crescem.");
-            System.out.println("Você se deita ao sol, no exato local onde acordou no início.");
-            System.out.println("Você está ferido, com cicatrizes, mudado para sempre.");
-            System.out.println("Mas você está em casa.");
-            System.out.println("Você fecha os olhos. Pela primeira vez em muito tempo, você se sente em paz.");
-            
-            System.out.println("\n[FIM DE JOGO]");
-            
-        } else {
-            // --- FINAL VERDADEIRO ---
-            System.out.println("############################################################");
-            System.out.println("#           FINAL VERDADEIRO: O GUARDIÃO                   #");
-            System.out.println("############################################################");
-            Util.pausar(1);
+            case 1:
+                // --- ESCOLHA DO FINAL ---
+                
+                sb.append("\n============================================================\n");
+                
+                if (input.equals("1")) {
+                    // --- FINAL BOM: A PAZ RECONQUISTADA ---
+                    sb.append("#           FINAL BOM: A PAZ RECONQUISTADA                 #\n");
+                    sb.append("============================================================\n\n");
+                    
+                    sb.append("Você viaja por dias. De volta por onde veio.\n");
+                    sb.append("Você chega na colina. Você chega na clareira.\n");
+                    sb.append("Está... quieta. O Poliwag não está no riacho.\n");
+                    sb.append("A árvore do Sentret está vazia.\n\n");
+                    
+                    sb.append("Mas a grama ainda é macia. As Oran Berries ainda crescem.\n");
+                    sb.append("Você se deita ao sol, no exato local onde acordou no início.\n");
+                    sb.append("Você está ferido, com cicatrizes, mudado para sempre.\n");
+                    sb.append("Mas você está em casa.\n");
+                    sb.append("Você fecha os olhos. Pela primeira vez em muito tempo, você se sente em paz.\n\n");
+                    
+                    sb.append("[FIM DE JOGO]");
+                    etapa = 99;
 
-            System.out.println("\nVocê olha para o sol nascente. Você não pode voltar.");
-            System.out.println("A inocência se foi. O Sentret se foi.");
-            System.out.println("Mas você pode garantir que isso nunca aconteça com mais ninguém.");
-            
-            System.out.println("Seu antigo treinador era apenas um sintoma. O Líder era apenas um homem.");
-            System.out.println("O problema é maior. O mundo precisa de quem o defenda.");
-            
-            System.out.println("Você sente algo queimar dentro de você. Não é ódio. É PROPÓSITO.");
-            System.out.println("Uma luz branca e brilhante te envolve. É quente. É poderosa.");
-            
-            System.out.println("\n(O que?! " + jogador.getNome() + " está evoluindo!)");
-            System.out.println("Seu corpo cresce. Suas feridas se fecham. Você atinge sua forma final.");
-            
-            System.out.println("\nVocê se vira, não para sua antiga casa, mas para o horizonte desconhecido.");
-            System.out.println("Você não é mais uma vítima.");
-            System.out.println("Você é um protetor. Um Guardião.");
-            
-            System.out.println("\n[FIM DE JOGO]");
+                } else if (input.equals("2")) {
+                    // --- FINAL VERDADEIRO: O GUARDIÃO ---
+                    sb.append("#           FINAL VERDADEIRO: O GUARDIÃO                   #\n");
+                    sb.append("============================================================\n\n");
+
+                    sb.append("Você olha para o sol nascente. Você não pode voltar.\n");
+                    sb.append("A inocência se foi. O Sentret se foi.\n");
+                    sb.append("Mas você pode garantir que isso nunca aconteça com mais ninguém.\n\n");
+                    
+                    sb.append("Seu antigo treinador era apenas um sintoma. O Líder era apenas um homem.\n");
+                    sb.append("O problema é maior. O mundo precisa de quem o defenda.\n");
+                    
+                    sb.append("Você sente algo queimar dentro de você. Não é ódio. É PROPÓSITO.\n");
+                    sb.append("Uma luz branca e brilhante te envolve. É quente. É poderosa.\n\n");
+                    
+                    sb.append("(O que?! " + jogador.getNome() + " está evoluindo!)\n");
+                    sb.append("Seu corpo cresce. Suas feridas se fecham. Você atinge sua forma final.\n\n");
+                    
+                    sb.append("Você se vira, não para sua antiga casa, mas para o horizonte desconhecido.\n");
+                    sb.append("Você não é mais uma vítima.\n");
+                    sb.append("Você é um protetor. Um Guardião.\n\n");
+                    
+                    sb.append("[FIM DE JOGO]");
+                    etapa = 99;
+
+                } else {
+                    return "Opção inválida. Digite 1 ou 2.";
+                }
+                break;
         }
-        
-        // Retorna false para encerrar o loop do jogo no main
-        return new ResultadoCapitulo("");
+
+        return sb.toString();
     }
 }

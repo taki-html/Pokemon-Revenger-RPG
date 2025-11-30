@@ -1,129 +1,212 @@
 package historia.capitulos;
 
 import historia.Capitulo;
-import historia.ResultadoCapitulo;
-import java.util.Scanner;
-import mecanicas.Batalha;
-import mecanicas.EstrategiaBatalhaNormal;
 import personagem.Inimigo;
 import personagem.Jogador;
-import util.Util;
 
-public class CapituloOito implements Capitulo {
+public class CapituloOito extends Capitulo {
+
+    private Inimigo inimigoAtivo; // Reutilizaremos para as duas batalhas
 
     @Override
-    public ResultadoCapitulo executar(Jogador jogador, Scanner scanner) {
-        System.out.println("\n--- CAPÍTULO 8: A TORRE QUEIMADA ---");
-        System.out.printf("(Status Atual: Nível %d. HP %d/%d. EXP %d/%d)\n",
-                jogador.getNivel(), jogador.getHp(), jogador.getHpMax(), jogador.getExp(), jogador.getExpParaProximoNivel());
-        System.out.println("(Ecruteak City. A velha torre se ergue contra o céu noturno chuvoso.)");
-        System.out.println("O lugar está cercado de cultistas. É uma fortaleza.");
-        System.out.println("Você entra por uma fenda nas ruínas.");
-
-        Util.aguardarEnter(scanner);
-
-        // --- SALA 1: A ENTRADA (Teste de Stealth/Agilidade) ---
-        System.out.println("\n[SALA 1: O HALL DE ENTRADA]");
-        System.out.println("Dois guardas patrulham a escada para o subsolo com lanternas.");
-        System.out.println("O chão está cheio de escombros.");
-
-        int escolhaSala1 = Util.obterEscolha(scanner, "COMO PASSAR?",
-                "[FURTIVIDADE] (Usar as sombras e escombros.)",
-                "[LUTAR] (Atacar os guardas de surpresa.)");
-
-        if (escolhaSala1 == 1) {
-            // Teste de Habilidade de Classe ou Agilidade
-            String habilidade = jogador.getHabilidadeExploracao();
-            boolean passouTeste = false;
-
-            // Verifica classes furtivas ou Agilidade alta
-            if (habilidade.equals("Voo Silencioso") || habilidade.equals("Aderência") || jogador.getAgi() >= 7) {
-                passouTeste = true;
-            }
-
-            if (passouTeste) {
-                System.out.println("Sucesso! Você usa " + habilidade + " (ou sua agilidade natural) para passar sem ser visto.");
-                jogador.ganharExp(30);
-            } else {
-                System.out.println("Você tenta ser silencioso, mas chuta uma pedra!");
-                System.out.println("Guarda: \"Ei! Um intruso!\"");
-                // Batalha Forçada
-                batalhaSala1(jogador, scanner);
-                if (!jogador.estaVivo()) return ResultadoCapitulo.finalRuim("Você caiu na entrada da torre.");
-            }
-        } else {
-            // Escolheu lutar
-            batalhaSala1(jogador, scanner);
-            if (!jogador.estaVivo()) return ResultadoCapitulo.finalRuim("Você caiu na entrada da torre.");
-        }
-
-        // --- SALA 2: CORREDOR DOS PRISIONEIROS ---
-        System.out.println("\n[SALA 2: O CORREDOR]");
-        System.out.println("Gaiolas alinham as paredes. Outros Pokémons capturados.");
-        System.out.println("Um Geodude, um Poliwag, um Pidgey. Eles te olham com esperança.");
-        
-        int escolhaSala2 = Util.obterEscolha(scanner, "O TEMPO É CURTO.",
-                "[LIBERTAR PRISIONEIROS] (Gasta tempo, requer habilidade, mas é o certo a fazer.)",
-                "[IGNORAR E AVANÇAR] (Você precisa chegar ao Líder. Sentret não foi salvo, por que eles seriam?)");
-
-        if (escolhaSala2 == 1) {
-            System.out.println("Você corre para as gaiolas.");
-            // Uso da Habilidade de Classe
-            System.out.println(jogador.usarHabilidadeExploracao("gaveta")); // Reaproveitando a string "gaveta" ou similar que abre coisas, ou apenas narrativo
-            System.out.println("Você quebra as travas!");
-            
-            System.out.println("Poliwag: \"Obrigado! Pegue isso!\"");
-            System.out.println("(Eles te dão uma Sitrus Berry. HP TOTALMENTE RECUPERADO!)");
-            jogador.setHp(jogador.getHpMax());
-            jogador.ganharExp(60); // Bônus de Heroísmo
-            jogador.adicionarLealdade(2);
-        } else {
-            System.out.println("Você fecha os olhos para o sofrimento deles e corre.");
-            System.out.println("O objetivo é a vingança, não o resgate.");
-            // Sem bônus
-        }
-
-        Util.aguardarEnter(scanner);
-
-        // --- SALA 3: O GUARDA DE ELITE ---
-        System.out.println("\n[SALA 3: A ANTECÂMARA]");
-        System.out.println("Um cultista de manto vermelho guarda a porta final.");
-        System.out.println("Guarda de Elite: \"O Mestre não será interrompido! ARCANINE, QUEIME-O!\"");
-        
-        Inimigo arcanine = new Inimigo("Arcanine de Elite", 35, 10, 8, 9, 8);
-        
-        System.out.println("\n(Cuidado! Se você morrer aqui, é o fim.)");
-        Batalha batalhaElite = new Batalha(jogador, arcanine, scanner, new EstrategiaBatalhaNormal());
-        boolean venceuElite = batalhaElite.iniciarBatalha();
-
-        if (venceuElite) {
-            System.out.println("O Arcanine cai com um baque pesado.");
-            System.out.println("O cultista foge, aterrorizado.");
-            System.out.println("A porta para o ritual está à sua frente.");
-            
-            jogador.ganharExp(100); // Level Up provável para Nível 9 ou 10
-            
-            return ResultadoCapitulo.continuar();
-        } else {
-            String msgFinal = "[FINAL RUIM 5: GUARDIÃO CAÍDO]\n" +
-                              "Você lutou bravamente contra a elite, mas não foi o bastante.\n" +
-                              "Você cai no chão de pedra da torre.\n" +
-                              "O último som que você ouve é o canto do ritual ficando mais alto.";
-            return ResultadoCapitulo.finalRuim(msgFinal);
-        }
+    public boolean estaFinalizado() {
+        return etapa == 99;
     }
 
-    // No método auxiliar batalhaSala1: Ajuste de Inimigos e XP
-    private void batalhaSala1(Jogador jogador, Scanner scanner) {
-        System.out.println("Um Machoke e um Hypno bloqueiam o caminho!");
-        // Status mais fortes para refletir Machoke/Hypno
-        Inimigo guardas = new Inimigo("Machoke & Hypno", 25, 15, 8, 7, 5); 
-        
-        Batalha b = new Batalha(jogador, guardas, scanner, new EstrategiaBatalhaNormal());
-        boolean venceu = b.iniciarBatalha();
-        
-        if (venceu) {
-            jogador.ganharExp(60); // O Bônus de Batalha prometido no texto
+    @Override
+    public String processar(String input, Jogador jogador) {
+        StringBuilder sb = new StringBuilder();
+
+        switch (etapa) {
+            case 0:
+                // --- INTRODUÇÃO ---
+                sb.append("\n--- CAPÍTULO 8: A TORRE QUEIMADA ---\n");
+                sb.append("(Status Atual: Nível " + jogador.getNivel() + ". HP " + jogador.getHp() + "/" + jogador.getHpMax() + ")\n\n");
+                sb.append("(Ecruteak City. A velha torre se ergue contra o céu noturno chuvoso.)\n");
+                sb.append("O lugar está cercado de cultistas. É uma fortaleza.\n");
+                sb.append("Você entra por uma fenda nas ruínas.\n\n");
+
+                sb.append("[SALA 1: O HALL DE ENTRADA]\n");
+                sb.append("Dois guardas patrulham a escada para o subsolo com lanternas.\n");
+                sb.append("O chão está cheio de escombros.\n");
+                sb.append("COMO PASSAR?\n");
+                sb.append("1. [FURTIVIDADE] (Tentar passar sem ser visto - Requer Agilidade ou Habilidade)\n");
+                sb.append("2. [LUTAR] (Atacar os guardas de surpresa)");
+                
+                etapa = 1;
+                break;
+
+            case 1:
+                // --- RESOLUÇÃO SALA 1 (ESCOLHA) ---
+                if (input.equals("1")) {
+                    // Teste de Furtividade
+                    String habilidade = jogador.getHabilidadeExploracao();
+                    boolean passouTeste = false;
+
+                    // Verifica classes furtivas ou Agilidade alta (>= 7)
+                    if (habilidade.equals("Voo Silencioso") || habilidade.equals("Aderência") || jogador.getAgi() >= 7) {
+                        passouTeste = true;
+                    }
+
+                    if (passouTeste) {
+                        sb.append("\n> SUCESSO!\n");
+                        sb.append("Você usa " + habilidade + " (ou sua agilidade natural) para passar pelas sombras.\n");
+                        sb.append("Os guardas passam direto por você.\n");
+                        sb.append("(+30 EXP)\n");
+                        jogador.ganharExp(30);
+                        
+                        avancarParaSala2(sb); // Pula a batalha
+                    } else {
+                        sb.append("\n> FALHA!\n");
+                        sb.append("Você tenta ser silencioso, mas chuta uma pedra!\n");
+                        sb.append("Guarda: \"Ei! Um intruso!\"\n");
+                        iniciarBatalhaSala1(sb); // Força a batalha
+                    }
+
+                } else if (input.equals("2")) {
+                    sb.append("\n> VOCÊ ESCOLHE A VIOLÊNCIA.\n");
+                    iniciarBatalhaSala1(sb);
+                } else {
+                    return "Opção inválida. Digite 1 ou 2.";
+                }
+                break;
+
+            case 2:
+                // --- LOOP DE BATALHA (SALA 1 - GUARDAS) ---
+                return processarBatalha(input, jogador, 3, "Você caiu na entrada da torre.");
+
+            case 3:
+                // --- SALA 2: PRISIONEIROS ---
+                sb.append("\n[SALA 2: O CORREDOR DOS PRISIONEIROS]\n");
+                sb.append("Gaiolas alinham as paredes. Outros Pokémons capturados.\n");
+                sb.append("Um Geodude, um Poliwag, um Pidgey. Eles te olham com esperança.\n\n");
+                sb.append("O TEMPO É CURTO.\n");
+                sb.append("1. [LIBERTAR] (Recupera HP, ganha EXP, mas gasta energia)\n");
+                sb.append("2. [IGNORAR] (Focar na vingança. O Líder está perto)");
+                
+                etapa = 4;
+                break;
+
+            case 4:
+                // --- RESOLUÇÃO SALA 2 ---
+                if (input.equals("1")) {
+                    sb.append("\n> ATO DE HEROÍSMO\n");
+                    sb.append("Você corre para as gaiolas e quebra as travas!\n");
+                    sb.append("Poliwag: \"Obrigado! Pegue isso!\"\n");
+                    sb.append("(Eles te dão uma Sitrus Berry. HP TOTALMENTE RECUPERADO!)\n");
+                    jogador.setHp(jogador.getHpMax());
+                    jogador.ganharExp(60); 
+
+                } else if (input.equals("2")) {
+                    sb.append("\n> FOCO TOTAL\n");
+                    sb.append("Você fecha os olhos para o sofrimento deles e corre.\n");
+                    sb.append("O objetivo é a vingança, não o resgate.\n");
+                } else {
+                    return "Opção inválida. Digite 1 ou 2.";
+                }
+
+                // Avança para a Sala 3 (Boss)
+                sb.append("\nVocê ouve cânticos vindos da próxima sala...\n");
+                
+                // REMOVIDO: Util.aguardarEnter(); -> Não funciona dentro do processar()
+                
+                sb.append("\n[SALA 3: A ANTECÂMARA]\n");
+                sb.append("Um cultista de manto vermelho guarda a porta final.\n");
+                sb.append("Guarda de Elite: \"O Mestre não será interrompido! ARCANINE, QUEIME-O!\"\n");
+
+                // Setup Boss
+                this.inimigoAtivo = new Inimigo("Arcanine de Elite", 35, 10, 8, 9, 8);
+                
+                sb.append("\n--- BATALHA CONTRA CHEFE ---\n");
+                sb.append("Inimigo: " + inimigoAtivo.getNome() + " (HP: " + inimigoAtivo.getHp() + ")\n");
+                sb.append("1. [ATACAR]\n2. [PROTEGER]");
+                
+                etapa = 6; // Vai para batalha do Boss
+                break;
+
+            case 6: // Pulei o 5 para manter consistência
+                // --- LOOP DE BATALHA (SALA 3 - ARCANINE) ---
+                return processarBatalha(input, jogador, 99, 
+                    "[FINAL RUIM 5: GUARDIÃO CAÍDO]\nVocê lutou bravamente contra a elite, mas não foi o bastante.\nVocê cai no chão de pedra da torre.");
         }
+
+        return sb.toString();
+    }
+
+    // --- MÉTODOS AUXILIARES ---
+
+    private void avancarParaSala2(StringBuilder sb) {
+        sb.append("\nVocê avança silenciosamente para o próximo corredor.\n");
+        sb.append("Pressione ENTER para continuar."); // Instrução visual apenas
+        etapa = 3; // Vai para Sala 2
+    }
+
+    private void iniciarBatalhaSala1(StringBuilder sb) {
+        sb.append("Um Machoke e um Hypno bloqueiam o caminho!\n");
+        // Status mais fortes
+        this.inimigoAtivo = new Inimigo("Machoke & Hypno", 25, 15, 8, 7, 5);
+        sb.append("--- BATALHA INICIADA ---\n");
+        sb.append("Inimigo: " + inimigoAtivo.getNome() + " (HP: " + inimigoAtivo.getHp() + ")\n");
+        sb.append("1. [ATACAR]\n2. [PROTEGER]");
+        etapa = 2; // Vai para loop de batalha 1
+    }
+
+    // Lógica genérica de batalha para reutilizar nas duas lutas
+    private String processarBatalha(String input, Jogador jogador, int etapaVitoria, String msgDerrota) {
+        StringBuilder sb = new StringBuilder();
+        int danoPlayer = 0;
+        boolean playerProtegeu = false;
+
+        // 1. Turno Jogador
+        if (input.equals("1")) {
+            danoPlayer = jogador.atacar(inimigoAtivo);
+            sb.append("> Você ataca! (Dano: " + danoPlayer + ")\n");
+        } else if (input.equals("2")) {
+            sb.append("> Você se protege.\n");
+            playerProtegeu = true;
+        } else {
+            return "Opção inválida. Digite 1 ou 2.";
+        }
+
+        // 2. Vitória?
+        if (!inimigoAtivo.estaVivo()) {
+            sb.append("\nO inimigo foi derrotado!\n");
+            jogador.ganharExp(etapaVitoria == 99 ? 100 : 60); // XP varia conforme a batalha
+            
+            if (etapaVitoria == 99) {
+                // Fim do Capítulo
+                sb.append("O Arcanine cai. O cultista foge, aterrorizado.\n");
+                sb.append("A porta para o ritual está à sua frente.\n");
+                sb.append("(Fim do Capítulo 8)");
+                etapa = 99;
+            } else {
+                // Vai para Sala 2
+                avancarParaSala2(sb);
+                etapa = 3; 
+            }
+            return sb.toString();
+        }
+
+        // 3. Turno Inimigo
+        if (playerProtegeu) {
+            sb.append("O inimigo ataca, mas você defende o golpe.\n");
+        } else {
+            int danoInimigo = inimigoAtivo.atacar(jogador);
+            sb.append(inimigoAtivo.getNome() + " contra-ataca! (Dano: " + danoInimigo + ")\n");
+        }
+
+        // 4. Derrota?
+        if (jogador.getHp() <= 0) {
+            sb.append("\n" + msgDerrota + "\n");
+            sb.append("Fim de Jogo.");
+            etapa = 99;
+            return sb.toString();
+        }
+
+        // 5. Continua
+        sb.append("\nSEU HP: " + jogador.getHp() + " | INIMIGO: " + inimigoAtivo.getHp() + "\n");
+        sb.append("1. [ATACAR]\n2. [PROTEGER]");
+        
+        return sb.toString();
     }
 }
