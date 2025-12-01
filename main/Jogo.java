@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import mecanicas.IEstrategiaBatalha;
 import mecanicas.EstrategiaBatalhaCap1;
+import mecanicas.EstrategiaBatalhaCap3;
 
 public class Jogo {
 
@@ -31,7 +32,7 @@ public class Jogo {
     private String bufferTexto;
     private String nomeTemp;
 
-    // 2. Variável que estava dando erro de "não utilizada"
+    
     private Batalha batalhaAtual; 
 
     public Jogo() {
@@ -40,9 +41,17 @@ public class Jogo {
         this.listaCapitulos = new ArrayList<>();
         this.bufferTexto = "";
 
-        // Adicione seus capítulos aqui
+        
         this.listaCapitulos.add(new CapituloUm()); 
-        // this.listaCapitulos.add(new CapituloDois()); ...
+        this.listaCapitulos.add(new CapituloDois()); 
+        this.listaCapitulos.add(new CapituloTres());
+        this.listaCapitulos.add(new CapituloQuatro());
+        this.listaCapitulos.add(new CapituloCinco());
+        this.listaCapitulos.add(new CapituloSeis());
+        this.listaCapitulos.add(new CapituloSete());
+        this.listaCapitulos.add(new CapituloOito());
+        this.listaCapitulos.add(new CapituloNove());
+        this.listaCapitulos.add(new CapituloDez());
     }
 
     // --- MÉTODOS AUXILIARES ---
@@ -60,7 +69,7 @@ public class Jogo {
 
     // Sobrecarga para batalhas de História (com estratégia específica)
     public void iniciarBatalha(Personagem inimigo, IEstrategiaBatalha estrategia) {
-        this.batalhaAtual = new Batalha(this.jogador, inimigo, estrategia); // Usa o construtor correto de Batalha
+        this.batalhaAtual = new Batalha(this.jogador, inimigo, estrategia); // Usa o construtor
         configurarInicioBatalha();
     }
 
@@ -111,7 +120,6 @@ public class Jogo {
                     adicionarTexto("Você escolheu: " + this.jogador.getNome());
                     
                     // Inicia o Capítulo 1
-                    adicionarTexto("\n--- CAPÍTULO 1 ---");
                     adicionarTexto(listaCapitulos.get(0).processar("", jogador));
                     estadoAtual = Estado.JOGANDO;
 
@@ -121,7 +129,6 @@ public class Jogo {
                 break;
 
             case JOGANDO:
-                // 1. Verificação de segurança: Se não há mais capítulos, acaba
                 if (indiceCapituloAtual >= listaCapitulos.size()) {
                     return "O Jogo Acabou. Obrigado por jogar!";
                 }
@@ -129,53 +136,48 @@ public class Jogo {
                 Capitulo capAtual = listaCapitulos.get(indiceCapituloAtual);
                 String resposta = capAtual.processar(input, jogador);
 
-                // 2. Verifica se o Capítulo pediu uma Batalha
                 if (resposta.contains("[BATALHA]")) {
                     
-                    // LÓGICA DE SELEÇÃO DE INIMIGO POR CAPÍTULO
+                    // --- SELEÇÃO DE BATALHA POR CAPÍTULO ---
+                    
                     if (indiceCapituloAtual == 0) { // Capítulo 1
-                        
-                        // Quilava do Cap 1 (Forte, estratégia roteirizada)
                         Inimigo quilava = new Inimigo("Quilava", 25, 8, 6, 7, 5);
                         IEstrategiaBatalha estrategiaCap1 = new EstrategiaBatalhaCap1();
-                        
                         iniciarBatalha(quilava, estrategiaCap1);
                         
-                    } else if (indiceCapituloAtual == 2) { // Exemplo: Capítulo 3
-                        // Lógica para batalha do Cap 3 (se houver)...
-                        // Inimigo inimigoCap3 = ...
-                        // iniciarBatalha(inimigoCap3, estrategiaCap3);
+                    } else if (indiceCapituloAtual == 2) { // Capítulo 3 (Índice 2)
+                        
+                        // 1. Criamos o inimigo específico deste capítulo
+                        Inimigo quilavaAssustado = new Inimigo("Quilava Assustado", 20, 5, 5, 7, 0);
+                        
+                        // 2. Usamos a Estratégia específica que tem as opções "Hesitar/Proteger"
+                        IEstrategiaBatalha estrategiaCap3 = new EstrategiaBatalhaCap3();
+                        
+                        // 3. Iniciamos
+                        iniciarBatalha(quilavaAssustado, estrategiaCap3);
                         
                     } else {
-                        // Batalha Genérica (Fallback para testes)
+                        // Batalha Genérica (Rattata)
                         Inimigo rato = new Inimigo("Rattata", 10, 2, 1, 2, 1);
                         iniciarBatalha(rato);
                     }
 
                 } else {
-                    // 3. Se não é batalha, apenas mostra o texto da história
+                    // Lógica de texto normal
                     adicionarTexto(resposta);
 
-                    // 4. Verifica se o capítulo terminou
                     if (capAtual.estaFinalizado()) {
-                        
-                        // Verifica se foi um FINAL RUIM (Ex: Capítulo 2 - Traição)
+                        // ... (Lógica de fim de capítulo igual à anterior)
                         if (resposta.contains("[FIM DE JOGO]")) {
                             estadoAtual = Estado.FIM;
-                        } 
-                        // Se for um final normal, avança para o próximo capítulo
-                        else {
+                        } else {
                             indiceCapituloAtual++;
-                            
                             if (indiceCapituloAtual < listaCapitulos.size()) {
                                 adicionarTexto("\n--- PRÓXIMO CAPÍTULO ---");
-                                // Inicia o próximo capítulo imediatamente (input vazio) para pegar o texto inicial
-                                String textoProxCap = listaCapitulos.get(indiceCapituloAtual).processar("", jogador);
-                                adicionarTexto(textoProxCap);
+                                adicionarTexto(listaCapitulos.get(indiceCapituloAtual).processar("", jogador));
                             } else {
-                                // Acabaram os capítulos da lista
                                 estadoAtual = Estado.FIM;
-                                adicionarTexto("\n[FIM DE JOGO - Parabéns, você completou a demo!]");
+                                adicionarTexto("\n[FIM DE JOGO]");
                             }
                         }
                     }
@@ -189,24 +191,27 @@ public class Jogo {
                     break;
                 }
 
-                // Envia o input do usuário para a batalha
                 String resultadoBatalha = batalhaAtual.processarRodada(input);
                 adicionarTexto(resultadoBatalha);
 
-                // Verifica se acabou
                 if (batalhaAtual.isTerminou()) {
                     if (batalhaAtual.isVitoriaJogador()) {
-                        adicionarTexto("\n(A batalha acabou! Retornando à história...)");
+                        adicionarTexto("\n(A batalha terminou.)");
                         estadoAtual = Estado.JOGANDO;
-                        
-                        // --- CORREÇÃO AQUI ---
-                        // Não criamos 'Capitulo capAtual', acessamos direto da lista
-                        // Chama o processar("", jogador) para pegar o texto pós-batalha (Etapa 2)
-                        String textoPosBatalha = listaCapitulos.get(indiceCapituloAtual).processar("", jogador);
-                        adicionarTexto(textoPosBatalha);
 
+                        // DECISÃO IMPORTANTE DO CAPÍTULO 3
+                        String flagResultado = "VITORIA_POR_RENDICAO"; // Padrão
+                        
+                        if (batalhaAtual.inimigoMorreuRealmente()) {
+                             flagResultado = "VITORIA_POR_MORTE";
+                        }
+
+                        // Passa o resultado para o Capítulo decidir a rota (Traição ou Lealdade)
+                        String textoPosBatalha = listaCapitulos.get(indiceCapituloAtual).processar(flagResultado, jogador);
+                        adicionarTexto(textoPosBatalha);
+                        
                     } else {
-                        adicionarTexto("\n(Você sucumbiu aos ferimentos...)");
+                        adicionarTexto("\n(Você sucumbiu...)");
                         estadoAtual = Estado.FIM;
                     }
                 }

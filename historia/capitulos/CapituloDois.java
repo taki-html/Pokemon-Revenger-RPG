@@ -13,7 +13,7 @@ public class CapituloDois extends Capitulo {
             jogador.setHp(1); // Força HP 1
             etapa++;
             return "--- CAPÍTULO 2: A GAIOLA ---\n\n" +
-                   "(A tela está preta.)\n" +
+                   "(Tudo está preto.)\n" +
                    "...frio... ...metal... ...dor...\n\n" +
                    "(Pressione Enter)";
         }

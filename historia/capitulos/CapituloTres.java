@@ -1,204 +1,198 @@
 package historia.capitulos;
 
 import historia.Capitulo;
-import personagem.Inimigo;
 import personagem.Jogador;
 
 public class CapituloTres extends Capitulo {
 
-    private Inimigo quilava;
-    private int turnosHesitacao = 0; // Contador para o final "Lealdade"
-
     @Override
-    public boolean estaFinalizado() {
-        return etapa == 99;
+    public String processar(String input, Jogador jogador) {
+
+        // --- INÍCIO ---
+        if (etapa == 0) {
+            etapa++;
+            return "--- CAPÍTULO 3: O ENCONTRO ---\n" +
+                   "(Status Atual: Nível " + jogador.getNivel() + " | HP " + jogador.getHp() + "/" + jogador.getHpMax() + ")\n\n" +
+                   "(Pressione Enter)";
+        }
+
+        if (etapa == 1) {
+            etapa++;
+            return "Você está sendo carregado na gaiola. O humano ('Ketch') está suando e visivelmente nervoso.\n" +
+                   "Ele te leva para um prédio abandonado e te deixa no corredor.\n" +
+                   "(O Quilava está com ele, parecendo tão nervoso quanto o mestre.)";
+        }
+
+        if (etapa == 2) {
+            etapa++;
+            return "Ketch: \"Quil, vigie a 'mercadoria'. Eu já volto. E FIQUE QUIETO.\"\n" +
+                   "(Ele entra em uma sala. Você ouve vozes abafadas. A trava da gaiola ainda está frouxa.)\n" +
+                   "(O Quilava te olha. Ele parece implorar para que você não faça barulho.)";
+        }
+
+        if (etapa == 3) {
+            etapa++;
+            return "O QUE VOCÊ FAZ?\n" +
+                   "1. [ESPIAR A REUNIÃO] (Você precisa saber o que está acontecendo.)\n" +
+                   "2. [FICAR QUIETO E OUVIR] (É muito arriscado se mover. É melhor só escutar.)";
+        }
+
+        // --- ESCOLHA DE EXPLORAÇÃO ---
+
+        if (etapa == 4) {
+            if (input.equals("1")) {
+                // CAMINHO A: ESPIAR
+                etapa = 10; // Pula para rota 1
+                return "Você empurra a trava. Clic. Você pisa fora da gaiola.\n" +
+                       "(O Quilava treme, mas não faz nada para te impedir.)\n" +
+                       "Você se esgueira até a fresta da porta.\n\n" +
+                       "(Pressione Enter)";
+            } else if (input.equals("2")) {
+                // CAMINHO B: OUVIR
+                etapa = 20; // Pula para rota 2
+                return "Você se encolhe no fundo da gaiola. O medo é maior.\n" +
+                       "(O Quilava solta um suspiro de alívio.)\n" +
+                       "Você se concentra nas vozes abafadas...\n\n" +
+                       "(Pressione Enter)";
+            } else {
+                return "Escolha inválida. Digite 1 ou 2.";
+            }
+        }
+
+        // --- ROTA A: ESPIAR (10+) ---
+        if (etapa == 10) {
+            etapa = 30; // Converge para o clímax
+            
+            // Lógica de Pistas
+            if (!jogador.temPista("SÍMBOLO DA EQUIPE")) {
+                jogador.adicionarPista("SÍMBOLO DA EQUIPE");
+                jogador.ganharExp(30);
+            }
+
+            return "(Você vê 'Ketch' falando com uma mulher alta, de uniforme preto e um sorriso frio.)\n" +
+                   "Mulher: \"...e sua 'mercadoria' está ferida, Ketch. Você é um incompetente.\"\n" +
+                   "Ketch: \"Mas ele é forte! Ele tem o espírito!\"\n" +
+                   "Mulher: \"Espírito não paga as contas. Onde está o pagamento?\"\n" +
+                   "(Ketch entrega a ela uma pequena caixa. Você vê o que tem dentro: Pokébolas... marcadas com um SÍMBOLO estranho.)\n" +
+                   "Mulher: \"Bom. Agora, o teste final. Traga-o.\"\n\n" +
+                   "(Você corre de volta para a gaiola, fechando a porta a tempo!)\n" +
+                   "[PISTA ADQUIRIDA: SÍMBOLO DA EQUIPE]";
+        }
+
+        // --- ROTA B: OUVIR (20+) ---
+        if (etapa == 20) {
+            etapa = 30; // Converge para o clímax
+            
+            if (!jogador.temPista("PROJETO TROVÃO")) {
+                jogador.adicionarPista("PROJETO TROVÃO");
+                jogador.incrementarInacao();
+            }
+
+            return "Voz (Ketch): \"...Eu juro, ele é forte! Ele tem o espírito!\"\n" +
+                   "Voz (Fria): \"Sua 'mercadoria' parece patética, Ketch. Ele está ferido. Você falhou na captura.\"\n" +
+                   "Voz (Ketch): \"Mas... mas o símbolo! Eu vi! O Símbolo do Trovão!\"\n" +
+                   "Voz (Fria): \"Isso é lenda. O *Projeto Trovão* não existe. Você está dispensado.\"\n" +
+                   "Voz (Ketch): \"Não! Espere! Eu posso provar! Eu vou provar!\"\n\n" +
+                   "[PISTA ADQUIRIDA: PROJETO TROVÃO]";
+        }
+
+        // --- CLÍMAX (30+) ---
+
+        if (etapa == 30) {
+            etapa++;
+            return "(Clímax do Capítulo)\n" +
+                   "A porta da sala se abre com um estrondo.\n" +
+                   "A Mulher do Uniforme sai, te olhando com desprezo.\n" +
+                   "Ketch a segue, pálido e tremendo de raiva.";
+        }
+
+        if (etapa == 31) {
+            etapa++;
+            return "Ketch: \"Fraco? Você me acha fraco? Você acha minha captura 'patética'?\"\n" +
+                   "Ketch: \"EU VOU TE MOSTRAR QUEM É FRACO!\"";
+        }
+
+        if (etapa == 32) {
+            etapa++;
+            return "(Ele chuta sua gaiola e a abre.)\n" +
+                   "Ketch: \"SAIA!\"\n" +
+                   "Ketch: \"Quilava! POSIÇÃO DE BATALHA!\"";
+        }
+
+        if (etapa == 33) {
+            etapa++;
+            return "O Quilava te encara, com as chamas baixas. Ele está apavorado.\n" +
+                   "Ketch: \"A 'mercadoria' precisa de um teste final. ATAQUE O QUILAVA. Mostre a ela do que você é capaz! AGORA!\"\n\n" +
+                   "Prepare-se para lutar... ou não.";
+        }
+
+        // --- GATILHO DA BATALHA ---
+        if (etapa == 34) {
+            etapa++;
+            return "[BATALHA]";
+        }
+
+        // --- PÓS-BATALHA ---
+        // O Jogo.java vai chamar processar("QUILAVA_MORREU", jogador) ou "QUILAVA_VIVO"
+        // Mas como Jogo.java é genérico, ele vai chamar processar("", jogador) normal.
+        // Precisamos saber o resultado.
+        
+        // TRUQUE: Vamos usar o input para saber o resultado.
+        // O Jogo.java precisará ser atualizado para mandar o resultado da batalha no input?
+        // NÃO. O Jogo.java manda o input do usuário.
+        
+        // Vamos assumir que a Etapa 35 recebe o veredicto.
+        if (etapa == 35) {
+            // Se o input contém uma flag especial do sistema (vamos configurar isso no Jogo.java)
+            if (input.equals("VITORIA_POR_MORTE")) {
+                etapa = 100; // Rota Traição
+            } else {
+                etapa = 200; // Rota Lealdade
+            }
+            // Precisamos retornar algo para processar o texto da próxima etapa imediatamente?
+            // Não, o input aqui foi técnico. Vamos chamar recursivamente ou pedir Enter.
+            return "(A poeira baixa...)\n(Pressione Enter)";
+        }
+
+        // --- ROTA TRAIÇÃO (100+) ---
+        if (etapa == 100) {
+            etapa = 300; // Finalizar
+            jogador.adicionarTraicao(1);
+            jogador.ganharExp(50);
+            return "(O Quilava está caído no chão, nocauteado. Ele não revidou.)\n" +
+                   "Ketch: \"VIU SÓ? VIU O PODER? EU DISSE!\"\n" +
+                   "A Mulher: \"...Interessante. Talvez. Traga-o.\"\n" +
+                   "(Ela vai embora. Ketch te joga na gaiola.)\n" +
+                   "Ketch: \"Você... você é forte. Você vai me fazer ser respeitado.\"\n\n" +
+                   "(Você traiu seu único aliado. EXP + 50)";
+        }
+
+        // --- ROTA LEALDADE (200+) ---
+        if (etapa == 200) {
+            etapa = 300; // Finalizar
+            jogador.adicionarLealdade(1);
+            jogador.ganharExp(70);
+            return "(Você se recusou a lutar.)\n" +
+                   "Ketch: \"O QUE VOCÊ ESTÁ FAZENDO? LUTE! SEU LIXO INÚTIL!\"\n" +
+                   "A Mulher: \"Patético. Ketch, seu tempo acabou.\"\n" +
+                   "(Ela se vira para ir embora.)\n" +
+                   "Ketch: \"NÃO! É CULPA SUA!\" (Ele levanta a bota para chutar sua gaiola.)\n" +
+                   "(O Quilava salta na frente, recebendo o golpe e protegendo você!)\n" +
+                   "A Mulher: \"...Basta.\" (Ela vai embora, rindo.)\n" +
+                   "Ketch: \"Você... você arruinou tudo!\"\n\n" +
+                   "(Você protegeu seu aliado. EXP + 70)";
+        }
+
+        if (etapa == 300) {
+            etapa++;
+            return "(Fim do Capítulo 3)";
+        }
+
+        return "";
     }
 
     @Override
-    public String processar(String input, Jogador jogador) {
-        // Proteção contra input nulo do front-end
-        if (input == null) {
-            input = "";
-        }
-
-        StringBuilder sb = new StringBuilder();
-
-        switch (etapa) {
-            case 0: // --- CENA 1: INTRODUÇÃO ---
-                sb.append("--- CAPÍTULO 3: O ENCONTRO ---\n");
-                sb.append(String.format("(Status Atual: Nível %d. HP %d/%d. EXP %d/%d)\n\n",
-                        jogador.getNivel(), jogador.getHp(), jogador.getHpMax(), jogador.getExp(), jogador.getExpParaProximoNivel()));
-
-                sb.append("Você está sendo carregado na gaiola. O humano ('Ketch') está suando e visivelmente nervoso.\n");
-                sb.append("Ele te leva para um prédio abandonado e te deixa no corredor.\n");
-                sb.append("(O Quilava está com ele, parecendo tão nervoso quanto o mestre.)\n");
-                
-                sb.append("\n[Digite algo para continuar]");
-                etapa = 1;
-                break;
-
-            case 1: // --- CENA 2: A SAÍDA DE KETCH ---
-                sb.append("Ketch: \"Quil, vigie a 'mercadoria'. Eu já volto. E FIQUE QUIETO.\"\n\n");
-                sb.append("(Ele entra em uma sala. Você ouve vozes abafadas. A trava da gaiola ainda está frouxa, como o Quilava deixou.)\n");
-                sb.append("(O Quilava te olha. Ele parece implorar para que você não faça barulho.)\n");
-                
-                sb.append("\nO QUE VOCÊ FAZ?\n");
-                sb.append("1. [ESPIAR A REUNIÃO] (Você precisa saber o que está acontecendo.)\n");
-                sb.append("2. [FICAR QUIETO E OUVIR] (É muito arriscado se mover. É melhor só escutar.)");
-                etapa = 2; // Aguarda decisão de espionagem
-                break;
-
-            case 2: // --- CENA 3: RESULTADO DA ESCOLHA ---
-                if (input.equals("1")) {
-                    // CAMINHO A: ESPIAR
-                    sb.append("\n> Você empurra a trava. Clic. Você pisa fora da gaiola.\n");
-                    sb.append("(O Quilava treme, mas não faz nada para te impedir.)\n");
-                    sb.append("Você se esgueira até a fresta da porta.\n\n");
-                    
-                    sb.append("(Você vê 'Ketch' falando com uma mulher alta, de uniforme preto e um sorriso frio.)\n");
-                    sb.append("Mulher: \"...e sua 'mercadoria' está ferida, Ketch. Você é um incompetente.\"\n");
-                    sb.append("Ketch entrega uma caixa com Pokébolas marcadas com um SÍMBOLO estranho.\n");
-                    
-                    sb.append("\n(PISTA ADICIONADA: SÍMBOLO DA EQUIPE)\n");
-                    jogador.adicionarPista("SÍMBOLO DA EQUIPE");
-                    jogador.ganharExp(30);
-
-                    sb.append("(Você corre de volta para a gaiola ao ouvir passos!)\n");
-
-                } else if (input.equals("2")) {
-                    // CAMINHO B: OUVIR
-                    sb.append("\n> Você se encolhe no fundo da gaiola. O medo é maior.\n");
-                    sb.append("(O Quilava solta um suspiro de alívio.)\n");
-                    sb.append("Você se concentra nas vozes abafadas...\n\n");
-                    
-                    sb.append("Voz (Ketch): \"...Eu juro, ele é forte! Ele tem o espírito!\"\n");
-                    sb.append("Voz (Fria): \"Sua 'mercadoria' parece patética. O *Projeto Trovão* não existe. Você está dispensado.\"\n");
-                    sb.append("Voz (Ketch): \"Não! Espere! Eu posso provar!\"\n");
-                    
-                    sb.append("\n(PISTA ADICIONADA: PROJETO TROVÃO)\n");
-                    jogador.adicionarPista("PROJETO TROVÃO");
-                    jogador.incrementarInacao(); // Salva a inação
-                } else {
-                    return "Opção inválida. Digite 1 ou 2.";
-                }
-                
-                sb.append("\n[Digite algo para esperar o clímax]");
-                etapa = 3;
-                break;
-
-            case 3: // --- CENA 4: O CLÍMAX ---
-                sb.append("A porta da sala se abre com um estrondo.\n");
-                sb.append("A Mulher do Uniforme sai, te olhando com desprezo.\n");
-                sb.append("Ketch a segue, pálido e tremendo de raiva.\n\n");
-                
-                sb.append("Ketch: \"Fraco? Você me acha fraco?\"\n");
-                sb.append("Ketch: \"EU VOU TE MOSTRAR QUEM É FRACO!\"\n");
-                
-                sb.append("\n[Digite algo...]");
-                etapa = 4;
-                break;
-
-            case 4: // --- CENA 5: O COMANDO ---
-                sb.append("(Ele chuta sua gaiola e a abre violentamente.)\n");
-                sb.append("Ketch: \"SAIA! Quilava! POSIÇÃO DE BATALHA!\"\n\n");
-                sb.append("O Quilava te encara, com as chamas baixas. Ele está apavorado.\n");
-                sb.append("Ketch: \"A 'mercadoria' precisa de um teste final. ATAQUE O QUILAVA. AGORA!\"\n");
-                
-                // Inicializa o inimigo para controle interno (simulação)
-                this.quilava = new Inimigo("Quilava Assustado", 20, 5, 5, 7, 0);
-                
-                sb.append("\n[Digite algo para entrar em combate]");
-                etapa = 5;
-                break;
-
-            case 5: // --- CENA 6: MENU DE BATALHA (SIMULADO) ---
-                sb.append("\n--- COMBATE INICIADO ---\n");
-                sb.append("Ketch está gritando ordens. Quilava está hesitante.\n");
-                sb.append("Quilava HP: " + quilava.getHp() + "\n");
-                
-                sb.append("\nO QUE VOCÊ FAZ?\n");
-                sb.append("1. [ATACAR] (Obedecer Ketch e ferir Quilava)\n");
-                sb.append("2. [HESITAR/PROTEGER] (Recusar-se a lutar)");
-                
-                etapa = 6; // Loop de batalha
-                break;
-
-            case 6: // --- CENA 7: LÓGICA DE COMBATE ---
-                if (input.equals("1")) {
-                    // --- OPÇÃO: ATACAR ---
-                    int dano = jogador.getAtaque(); // Dano base do jogador
-                    quilava.receberDano(dano);
-                    
-                    sb.append("\n> Você avança e ataca o Quilava!\n");
-                    sb.append("O Quilava grita de dor. Ele não revida. (Dano: " + dano + ")\n");
-                    sb.append("Ketch: \"ISSO! MAIS FORTE!\"\n");
-
-                    if (!quilava.estaVivo()) {
-                        // Quilava derrotado -> CAMINHO TRAIÇÃO
-                        sb.append("\n(O Quilava cai no chão, nocauteado.)\n");
-                        sb.append("[Digite algo para ver o resultado]");
-                        etapa = 7; // Final Ruim/Traição
-                    } else {
-                        // Continua a batalha
-                        sb.append("\nEle ainda está de pé, mas fraco.\n");
-                        sb.append("[Digite algo para o próximo turno]");
-                        etapa = 5; // Volta pro menu
-                    }
-
-                } else if (input.equals("2")) {
-                    // --- OPÇÃO: HESITAR ---
-                    turnosHesitacao++;
-                    sb.append("\n> Você se recusa a atacar. Você encara Ketch.\n");
-                    
-                    if (turnosHesitacao >= 2) {
-                        // Hesitou o suficiente -> CAMINHO LEALDADE
-                        sb.append("Ketch: \"INÚTIL! EU VOU ACABAR COM ISSO EU MESMO!\"\n");
-                        sb.append("[Digite algo para ver o resultado]");
-                        etapa = 8; // Final Bom/Lealdade
-                    } else {
-                        sb.append("Ketch: \"O QUE ESTÁ ESPERANDO? EU MANDEI MATAR!\"\n");
-                        sb.append("A Mulher observa, impaciente.\n");
-                        sb.append("[Digite algo para o próximo turno]");
-                        etapa = 5; // Volta pro menu
-                    }
-                } else {
-                    return "Opção inválida. Digite 1 para Atacar ou 2 para Hesitar.";
-                }
-                break;
-
-            case 7: // --- CENA 8: CONCLUSÃO (TRAIÇÃO) ---
-                sb.append("Ketch: \"VIU SÓ? VIU O PODER? EU DISSE!\"\n");
-                sb.append("A Mulher: \"...Interessante. Talvez. Traga-o.\"\n\n");
-                sb.append("(Ela vai embora. Ketch te joga na gaiola com um sorriso cruel.)\n");
-                sb.append("Ketch: \"Você... você é forte. Você vai me fazer ser respeitado.\"\n\n");
-                
-                sb.append("(Você traiu seu único aliado. EXP +50)\n");
-                jogador.adicionarTraicao(1);
-                jogador.ganharExp(50);
-                
-                sb.append("\n--- FIM DO CAPÍTULO 3 ---");
-                etapa = 99;
-                break;
-
-            case 8: // --- CENA 9: CONCLUSÃO (LEALDADE) ---
-                sb.append("A Mulher: \"Patético. Ketch, seu tempo acabou.\"\n");
-                sb.append("(Ela se vira para ir embora.)\n\n");
-                sb.append("Ketch: \"NÃO! É CULPA SUA!\"\n");
-                sb.append("(Ele levanta a bota pesada para chutar sua cabeça.)\n");
-                sb.append("(VULT! O Quilava salta na frente, recebendo o golpe brutal e protegendo você!)\n\n");
-                
-                sb.append("A Mulher para. \"...Basta.\" (Ela vai embora, rindo.)\n");
-                sb.append("Ketch cai de joelhos, derrotado. \"Você... você arruinou tudo!\"\n\n");
-                
-                sb.append("(Você protegeu seu aliado. EXP +70)\n");
-                jogador.adicionarLealdade(1);
-                jogador.ganharExp(70);
-                
-                sb.append("\n--- FIM DO CAPÍTULO 3 ---");
-                etapa = 99;
-                break;
-        }
-
-        return sb.toString();
+    public boolean estaFinalizado() {
+        return etapa > 300;
     }
 }

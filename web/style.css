@@ -12,7 +12,10 @@ html, body {
     overflow: hidden;
 }
 
-/* Fundo com a imagem do seu projeto */
+/* ========================================================= */
+/* ======================= FUNDO DO JOGO =================== */
+/* ========================================================= */
+
 #background {
     position: absolute;
     inset: 0;
@@ -22,12 +25,38 @@ html, body {
     background-repeat: no-repeat;
 }
 
+/* Texto do Resumo vindo do Java (suporte a \n) */
 #texto-resumo {
     line-height: 1.6;
-    white-space: pre-line; /* Isso fará o \n do Java virar quebra de linha no HTML */
+    white-space: pre-line;
 }
 
-/* Película preta */
+/* ========================================================= */
+/* ======================= RESUMO =========================== */
+/* ========================================================= */
+
+.resumo-box {
+    background: rgba(0, 0, 0, 0.55);
+    padding: 18px 22px;
+    border-radius: 12px;
+    border: 1px solid #ffffff40;
+    margin-top: 16px;
+    color: #e0e0e0;
+    line-height: 1.5rem;
+    font-size: 1rem;
+    transition: 0.2s ease-in-out;
+}
+
+.resumo-box:hover {
+    background: rgba(255, 255, 255, 0.10);
+    transform: scale(1.01);
+}
+
+
+/* ========================================================= */
+/* ===================== PELÍCULA ESCURA =================== */
+/* ========================================================= */
+
 .overlay {
     position: absolute;
     inset: 0;
@@ -42,7 +71,10 @@ html, body {
     pointer-events: none;
 }
 
-/* Menu principal */
+/* ========================================================= */
+/* ======================= MENU SUPERIOR ==================== */
+/* ========================================================= */
+
 #main-menu {
     position: relative;
     z-index: 2;
@@ -74,7 +106,10 @@ nav {
     font-size: 0.9rem;
 }
 
-/* Área de conteúdo */
+/* ========================================================= */
+/* ===================== ÁREA DE CONTEÚDO ================== */
+/* ========================================================= */
+
 #content {
     position: relative;
     z-index: 2;
@@ -91,7 +126,10 @@ nav {
     display: block;
 }
 
-/* Lista equipe */
+/* ========================================================= */
+/* ================ LISTA ANTIGA DE EQUIPE ================= */
+/* ========================================================= */
+
 .team-list {
     list-style: none;
     padding-left: 0;
@@ -101,7 +139,55 @@ nav {
     margin-bottom: 6px;
 }
 
-/* HUD dos capítulos (pra usar mais tarde) */
+/* ========================================================= */
+/* =============== NOVO LAYOUT – EQUIPE (GRID) ============= */
+/* ========================================================= */
+
+.team-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.member-box {
+    background: rgba(0, 0, 0, 0.55);
+    padding: 16px;
+    border-radius: 12px;
+    border: 1px solid #ffffff40;
+    transition: 0.2s;
+}
+
+.member-box:hover {
+    background: rgba(255, 255, 255, 0.10);
+    transform: scale(1.03);
+}
+
+.member-box h3 {
+    color: #fff;
+    margin: 0;
+    font-size: 1.3rem;
+    font-weight: bold;
+}
+
+.member-box .papel {
+    color: #ffc400;
+    font-weight: bold;
+    margin-top: 6px;
+    font-size: 1rem;
+}
+
+.member-box .descricao {
+    margin-top: 10px;
+    color: #e0e0e0;
+    line-height: 1.4rem;
+    font-size: 0.95rem;
+}
+
+/* ========================================================= */
+/* ====================== HUD DOS CAPÍTULOS ================ */
+/* ========================================================= */
+
 #hud {
     position: absolute;
     z-index: 3;
@@ -119,7 +205,10 @@ nav {
     display: none;
 }
 
-/* Responsivo */
+/* ========================================================= */
+/* ====================== RESPONSIVIDADE ==================== */
+/* ========================================================= */
+
 @media (max-width: 600px) {
     #main-menu {
         flex-direction: column;

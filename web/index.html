@@ -37,28 +37,67 @@
             <!-- Resumo -->
             <section id="screen-resumo" class="screen">
                 <h2>Resumo</h2>
+                <div class="resumo-box">
                 <p id="texto-resumo">
-                   Você é um Pokémon de Johto, arrancado de sua vida selvagem e capturado por um treinador cruel. Mais do que um parceiro, você é tratado como uma ferramenta, forçado a lutar em batalhas clandestinas e brutais, sendo maltratado após cada vitória ou derrota.
-
-Percebendo que a liberdade não virá por conta própria, você planeja sua fuga. Mas escapar não é o bastante. Você descobre que seu captor pertence a uma organização secreta. Sua jornada se torna uma missão de vingança e libertação: encontrar uma forma de desmantelar essa organização e resgatar os outros cativos.
- 
+                   Você é um Pokémon de Johto, arrancado de sua vida selvagem e capturado por um treinador cruel. Mais do que um parceiro, você é tratado como uma ferramenta, forçado a lutar em batalhas clandestinas e brutais, sendo maltratado após cada vitória ou derrota. Percebendo que a liberdade não virá por conta própria, você planeja sua fuga. Mas escapar não é o bastante. Você descobre que seu captor pertence a uma organização secreta. Sua jornada se torna uma missão de vingança e libertação: encontrar uma forma de desmantelar essa organização e resgatar os outros cativos.
                 </p>
+                </div>
             </section>
 
-            <!-- Equipe -->
             <section id="screen-equipe" class="screen">
-                <h2>Conheça a equipe</h2>
-                <ul class="team-list">
-                    <!-- preenchido pelo Java -->
-                </ul>
-            </section>
+    <h2>Conheça a equipe</h2>
+
+    <div class="team-grid">
+
+
+        <!-- Matheus Yoshio -->
+        <div class="member-box">
+            <h3>Matheus Yoshio</h3>
+            <p class="papel">Interface e Criação de Capitulos</p>
+            <p class="descricao">
+                Cuida da experiência do jogador e do visual da interface. Focado em deixar 
+                o jogo fluido, intuitivo e agradável, sempre buscando clareza e imersão e no funcionamento.
+            </p>
+        </div>
+
+        <!-- Mariana Sato -->
+        <div class="member-box">
+            <h3>Mariana Sato</h3>
+            <p class="papel">Mecânicas e Criação de Capitulos</p>
+            <p class="descricao">
+                Desenvolve a lógica das batalhas, atributos, interações e comportamentos dos
+                personagens. É responsável por deixar o jogo desafiador, equilibrado e fiel
+                à experiência de RPG.
+            </p>
+        </div>
+
+                <!-- Pablo -->
+        <div class="member-box">
+            <h3>Pablo Vargas</h3>
+            <p class="papel">Interface / Conexão com o Java</p>
+            <p class="descricao">
+                Responsável por integrar o jogo com o sistema web, garantindo que cada cena,
+                escolha e ação funcione perfeitamente entre o Java e o HTML. Atua como ponte
+                entre a lógica interna do jogo e a experiência visual do jogador.
+            </p>
+        </div>
+
+    </div>
+</section>
         </main>
 
-        <!-- HUD do jogo (pra usar depois com capítulos) -->
-        <div id="hud" class="hidden">
-            <div id="texto-capitulo"></div>
-            <button id="btn-proximo">Próximo</button>
-        </div>
+<div id="hud" class="hidden">
+    <div id="texto-capitulo"></div>
+
+    <!-- BOX DE ESCOLHAS -->
+    <div id="choices-box" class="choices-box hidden">
+        <!-- Os botões de escolha serão criados aqui via JS -->
+    </div>
+
+    <!-- Botão padrão de "Próximo" (quando não tem escolha) -->
+    <button id="btn-proximo">Próximo</button>
+</div>
+
     </div>
 
     <script src="conf.js"></script>

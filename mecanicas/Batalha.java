@@ -21,6 +21,11 @@ public class Batalha {
         this.batalhaTerminou = false;
         this.vitoriaJogador = false;
     }
+    
+
+    public boolean inimigoMorreuRealmente() {
+        return !p2.estaVivo();
+    }
 
     // Retorna as opções para exibir no frontend (ex: 1. Atacar, 2. Fugir)
     public String getTextoOpcoes() {

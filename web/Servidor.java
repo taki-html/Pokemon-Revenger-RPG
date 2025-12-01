@@ -81,8 +81,7 @@ public class Servidor {
         server.createContext("/api/inicial", new HttpHandler() {
             @Override
             public void handle(HttpExchange t) throws IOException {
-                String resumo = "Você é um Pokémon de Johto, arrancado de sua vida selvagem... " +
-                        "Sua jornada se torna uma missão de vingança e libertação.";
+                String resumo = " Você é um Pokémon de Johto, arrancado de sua vida selvagem e capturado por um treinador cruel. Mais do que um parceiro, você é tratado como uma ferramenta, forçado a lutar em batalhas clandestinas e brutais, sendo maltratado após cada vitória ou derrota. Percebendo que a liberdade não virá por conta própria, você planeja sua fuga. Mas escapar não é o bastante. Você descobre que seu captor pertence a uma organização secreta. Sua jornada se torna uma missão de vingança e libertação: encontrar uma forma de desmantelar essa organização e resgatar os outros cativos.";
                 
                 // JSON manual simples
                 String json = "{" +
